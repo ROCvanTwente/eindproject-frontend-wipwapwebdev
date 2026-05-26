@@ -1,0 +1,7 @@
+/* ROC van Twente typografie - Canaro en Open Sans */
+
+/* Canaro - voor headers en knoppen */
+@import url('https://fonts.cdnfonts.com/css/canaro');
+
+/* Open Sans - voor body tekst */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
