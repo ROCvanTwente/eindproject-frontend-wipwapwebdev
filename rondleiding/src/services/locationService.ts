@@ -15,22 +15,22 @@ function normalize(data: any): Location {
 
 export const locationService = {
   async getAll(): Promise<Location[]> {
-    const response = await api.get('/api/locations');
+    const response = await api.get('/api/location');
     const data = unwrapResponseData<any[]>(response.data) ?? [];
     return data.map(normalize);
   },
 
   async create(payload: Omit<Location, 'id' | 'buildingName'>): Promise<Location> {
-    const response = await api.post('/api/locations', payload);
+    const response = await api.post('/api/location', payload);
     return normalize(unwrapResponseData<any>(response.data));
   },
 
   async update(id: string, payload: Omit<Location, 'id' | 'buildingName'>): Promise<Location> {
-    const response = await api.put(`/api/locations/${id}`, payload);
+    const response = await api.put(`/api/location/${id}`, payload);
     return normalize(unwrapResponseData<any>(response.data));
   },
 
   async remove(id: string): Promise<void> {
-    await api.delete(`/api/locations/${id}`);
+    await api.delete(`/api/location/${id}`);
   },
 };

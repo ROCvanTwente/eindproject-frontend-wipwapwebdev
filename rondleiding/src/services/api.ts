@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://localhost:7003';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5237';
 
 export const TOKEN_STORAGE_KEY = 'school-guide-auth-token';
 export const REFRESH_STORAGE_KEY = 'school-guide-refresh-token';

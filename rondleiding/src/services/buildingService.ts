@@ -12,22 +12,22 @@ function normalize(data: any): Building {
 
 export const buildingService = {
   async getAll(): Promise<Building[]> {
-    const response = await api.get('/api/buildings');
+    const response = await api.get('/api/building');
     const data = unwrapResponseData<any[]>(response.data) ?? [];
     return data.map(normalize);
   },
 
   async create(payload: Omit<Building, 'id'>): Promise<Building> {
-    const response = await api.post('/api/buildings', payload);
+    const response = await api.post('/api/building', payload);
     return normalize(unwrapResponseData<any>(response.data));
   },
 
   async update(id: string, payload: Omit<Building, 'id'>): Promise<Building> {
-    const response = await api.put(`/api/buildings/${id}`, payload);
+    const response = await api.put(`/api/building/${id}`, payload);
     return normalize(unwrapResponseData<any>(response.data));
   },
 
   async remove(id: string): Promise<void> {
-    await api.delete(`/api/buildings/${id}`);
+    await api.delete(`/api/building/${id}`);
   },
 };
