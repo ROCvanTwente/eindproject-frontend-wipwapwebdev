@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-route
 import { AdminPanel } from './components/AdminPanel';
 import { UserMap } from './components/UserMap';
 import { TourNavigator } from './components/TourNavigator';
+import { LoginPage } from './components/LoginPage';
 import { Button } from './components/ui/button';
 import { Settings, Map } from 'lucide-react';
 import type { TourPoint } from './components/types';
@@ -10,6 +11,7 @@ import type { TourPoint } from './components/types';
 function AppContent() {
   const [tourPoints, setTourPoints] = useState<TourPoint[]>([]);
   const [selectedPoint, setSelectedPoint] = useState<TourPoint | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
   // Demo data voor development (verwijderd zodra backend werkt)
@@ -72,10 +74,20 @@ function AppContent() {
     navigate('/');
   };
 
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    navigate('/admin');
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    navigate('/');
+  };
+
   return (
     <div className="size-full">
       {/* Navigatie toggle */}
-      <div className="fixed top-4 right-4 z-50 flex gap-2">
+      <div className="fixed top-4 right-4 z-50 flex flex-wrap gap-2">
         <Button
           variant="outline"
           size="sm"
@@ -94,11 +106,43 @@ function AppContent() {
           <Settings className="w-4 h-4 mr-2" />
           admin
         </Button>
+        {isAuthenticated ? (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleLogout}
+            className="bg-white shadow-md"
+          >
+            uitloggen
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate('/login')}
+            className="bg-white shadow-md"
+          >
+            inloggen
+          </Button>
+        )}
       </div>
 
       <Routes>
         <Route path="/" element={<UserMap tourPoints={tourPoints} onSelectPoint={handleSelectPoint} />} />
-        <Route path="/admin" element={<AdminPanel />} />
+        <Route
+          path="/login"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/admin" replace />
+            ) : (
+              <LoginPage onLogin={handleLogin} />
+            )
+          }
+        />
+        <Route
+          path="/admin"
+          element={isAuthenticated ? <AdminPanel /> : <Navigate to="/login" replace />}
+        />
         <Route
           path="/tour"
           element={
