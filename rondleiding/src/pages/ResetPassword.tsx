@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react';
+import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router';
 import { AlertCircle, CheckCircle2, KeyRound } from 'lucide-react';
 import { Button } from '../app/components/ui/button';
@@ -10,7 +11,7 @@ import { api, TOKEN_STORAGE_KEY } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { decodeJwt, getPasswordChangeRequirement } from '../utils/jwtUtils';
 
-const REDIRECT_DELAY_MS = 2000;
+const POST_RESET_REDIRECT_DELAY_MS = 2000;
 
 export function ResetPassword() {
   const navigate = useNavigate();
@@ -79,9 +80,13 @@ export function ResetPassword() {
       setTimeout(() => {
         logout();
         navigate('/admin/login', { replace: true });
-      }, REDIRECT_DELAY_MS);
+      }, POST_RESET_REDIRECT_DELAY_MS);
     } catch (submitError) {
-      setError('Wachtwoord wijzigen is mislukt. Probeer het opnieuw.');
+      const apiError =
+        axios.isAxiosError(submitError) && typeof submitError.response?.data?.message === 'string'
+          ? submitError.response.data.message
+          : null;
+      setError(apiError ?? 'Wachtwoord wijzigen is mislukt. Probeer het opnieuw.');
       console.error(submitError);
     } finally {
       setIsSubmitting(false);

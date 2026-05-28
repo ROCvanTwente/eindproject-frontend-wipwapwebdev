@@ -8,8 +8,8 @@ export interface JwtClaims {
 export function decodeJwt(token: string): JwtClaims | null {
   try {
     const tokenParts = token.split('.');
-    if (tokenParts.length < 2) {
-      throw new Error('Token is malformed.');
+    if (tokenParts.length < 3) {
+      throw new Error('Token is malformed. Expected header.payload.signature.');
     }
 
     const base64Url = tokenParts[1];
@@ -29,5 +29,5 @@ export function decodeJwt(token: string): JwtClaims | null {
 
 export function getPasswordChangeRequirement(token: string): boolean {
   const decoded = decodeJwt(token);
-  return decoded?.PasswordChanged === 'False';
+  return String(decoded?.PasswordChanged).toLowerCase() === 'false';
 }
