@@ -9,14 +9,14 @@ import { useAuth } from '../../context/AuthContext';
 
 export function AdminLogin() {
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, requiresPasswordChange } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   if (isAuthenticated) {
-    return <Navigate to="/admin" replace />;
+    return <Navigate to={requiresPasswordChange ? '/reset-password' : '/admin'} replace />;
   }
 
   const handleSubmit = async (event: FormEvent) => {
@@ -25,7 +25,16 @@ export function AdminLogin() {
     setLoading(true);
 
     try {
-      await login(email, password);
+      const loginResult = await login(email, password);
+
+      if (loginResult.requiresPasswordChange) {
+        const adminEmail = loginResult.email ?? email.trim();
+        sessionStorage.setItem('adminEmail', adminEmail);
+        toast.info('Wijzig eerst je wachtwoord om door te gaan');
+        navigate('/reset-password', { replace: true });
+        return;
+      }
+
       toast.success('Succesvol ingelogd');
       navigate('/admin', { replace: true });
     } catch (err) {
