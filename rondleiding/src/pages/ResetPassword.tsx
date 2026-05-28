@@ -10,6 +10,8 @@ import { api, TOKEN_STORAGE_KEY } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { decodeJwt, getPasswordChangeRequirement } from '../utils/jwtUtils';
 
+const REDIRECT_DELAY_MS = 2000;
+
 export function ResetPassword() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -77,7 +79,7 @@ export function ResetPassword() {
       setTimeout(() => {
         logout();
         navigate('/admin/login', { replace: true });
-      }, 2000);
+      }, REDIRECT_DELAY_MS);
     } catch (submitError) {
       setError('Wachtwoord wijzigen is mislukt. Probeer het opnieuw.');
       console.error(submitError);
@@ -112,7 +114,7 @@ export function ResetPassword() {
               <Alert>
                 <CheckCircle2 className="h-4 w-4" />
                 <AlertTitle>Gelukt</AlertTitle>
-                <AlertDescription>Wachtwoord aangepast. Je wordt doorgestuurd naar het dashboard.</AlertDescription>
+                <AlertDescription>Wachtwoord aangepast. Je wordt doorgestuurd naar de loginpagina.</AlertDescription>
               </Alert>
             ) : null}
 
