@@ -7,6 +7,9 @@ import { Input } from '../app/components/ui/input';
 import { Label } from '../app/components/ui/label';
 import { Alert, AlertDescription } from '../app/components/ui/alert';
 import { api } from '../services/api';
+import { useAuth } from '../context/AuthContext';
+
+const MIN_PASSWORD_LENGTH = 8;
 
 function getApiErrorMessage(error: unknown): string {
   if (!error || typeof error !== 'object') {
@@ -21,6 +24,7 @@ function getApiErrorMessage(error: unknown): string {
 export function ResetPassword() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { completePasswordChange, isAuthenticated } = useAuth();
   const queryEmail = searchParams.get('email')?.trim() ?? '';
   const sessionEmail = sessionStorage.getItem('adminEmail')?.trim() ?? '';
   const email = useMemo(() => queryEmail || sessionEmail, [queryEmail, sessionEmail]);
@@ -31,23 +35,18 @@ export function ResetPassword() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (email) {
-      sessionStorage.setItem('adminEmail', email);
-    }
-  }, [email]);
-
-  useEffect(() => {
     if (!success) {
       return;
     }
 
     const timeout = window.setTimeout(() => {
+      completePasswordChange();
       sessionStorage.removeItem('adminEmail');
       navigate('/admin', { replace: true });
     }, 2000);
 
     return () => window.clearTimeout(timeout);
-  }, [navigate, success]);
+  }, [completePasswordChange, navigate, success]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -58,8 +57,8 @@ export function ResetPassword() {
       return;
     }
 
-    if (newPassword.length < 8) {
-      setError('Wachtwoord moet minimaal 8 tekens bevatten.');
+    if (newPassword.length < MIN_PASSWORD_LENGTH) {
+      setError(`Wachtwoord moet minimaal ${MIN_PASSWORD_LENGTH} tekens bevatten.`);
       return;
     }
 
@@ -84,7 +83,7 @@ export function ResetPassword() {
   };
 
   if (!email) {
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to={isAuthenticated ? '/admin' : '/admin/login'} replace />;
   }
 
   return (
@@ -125,7 +124,7 @@ export function ResetPassword() {
                   type="password"
                   value={newPassword}
                   onChange={(event) => setNewPassword(event.target.value)}
-                  minLength={8}
+                  minLength={MIN_PASSWORD_LENGTH}
                   required
                   disabled={loading}
                 />
@@ -138,7 +137,7 @@ export function ResetPassword() {
                   type="password"
                   value={confirmPassword}
                   onChange={(event) => setConfirmPassword(event.target.value)}
-                  minLength={8}
+                  minLength={MIN_PASSWORD_LENGTH}
                   required
                   disabled={loading}
                 />
