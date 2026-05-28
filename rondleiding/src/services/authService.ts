@@ -5,6 +5,11 @@ interface LoginResponseShape {
   token?: string;
   accessToken?: string;
   refreshToken?: string;
+  requiresPasswordChange?: boolean;
+  email?: string;
+  user?: {
+    email?: string;
+  };
 }
 
 function tokenFromPayload(data: LoginResponseShape): string | null {
@@ -12,7 +17,9 @@ function tokenFromPayload(data: LoginResponseShape): string | null {
 }
 
 export const authService = {
-  async login(payload: LoginRequest): Promise<{ token: string; refreshToken?: string }> {
+  async login(
+    payload: LoginRequest,
+  ): Promise<{ token: string; refreshToken?: string; requiresPasswordChange: boolean; email?: string }> {
     const response = await api.post('/api/auth/login', payload);
     const data = unwrapResponseData<LoginResponseShape>(response.data);
     const token = tokenFromPayload(data);
@@ -27,7 +34,12 @@ export const authService = {
       localStorage.setItem(REFRESH_STORAGE_KEY, data.refreshToken);
     }
 
-    return { token, refreshToken: data.refreshToken };
+    return {
+      token,
+      refreshToken: data.refreshToken,
+      requiresPasswordChange: !!data.requiresPasswordChange,
+      email: data.email ?? data.user?.email ?? payload.email,
+    };
   },
 
   logout() {

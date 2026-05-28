@@ -3,29 +3,51 @@ import { authService } from '../services/authService';
 
 interface AuthContextValue {
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<string>;
+  requiresPasswordChange: boolean;
+  login: (email: string, password: string) => Promise<{ requiresPasswordChange: boolean; email?: string }>;
+  completePasswordChange: () => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
+const PASSWORD_CHANGE_REQUIRED_KEY = 'admin-requires-password-change';
 
 export function AuthProvider({ children }: PropsWithChildren) {
-  const [isAuthenticated, setIsAuthenticated] = useState(authService.isAuthenticated());
+  const initiallyAuthenticated = authService.isAuthenticated();
+  const [isAuthenticated, setIsAuthenticated] = useState(initiallyAuthenticated);
+  const [requiresPasswordChange, setRequiresPasswordChange] = useState(
+    initiallyAuthenticated && sessionStorage.getItem(PASSWORD_CHANGE_REQUIRED_KEY) === 'true',
+  );
 
   const value = useMemo<AuthContextValue>(
     () => ({
       isAuthenticated,
+      requiresPasswordChange,
       async login(email: string, password: string) {
-        const { token } = await authService.login({ email, password });
+        const result = await authService.login({ email, password });
         setIsAuthenticated(true);
-        return token;
+        setRequiresPasswordChange(result.requiresPasswordChange);
+
+        if (result.requiresPasswordChange) {
+          sessionStorage.setItem(PASSWORD_CHANGE_REQUIRED_KEY, 'true');
+        } else {
+          sessionStorage.removeItem(PASSWORD_CHANGE_REQUIRED_KEY);
+        }
+
+        return { requiresPasswordChange: result.requiresPasswordChange, email: result.email };
+      },
+      completePasswordChange() {
+        setRequiresPasswordChange(false);
+        sessionStorage.removeItem(PASSWORD_CHANGE_REQUIRED_KEY);
       },
       logout() {
         authService.logout();
         setIsAuthenticated(false);
+        setRequiresPasswordChange(false);
+        sessionStorage.removeItem(PASSWORD_CHANGE_REQUIRED_KEY);
       },
     }),
-    [isAuthenticated],
+    [isAuthenticated, requiresPasswordChange],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
