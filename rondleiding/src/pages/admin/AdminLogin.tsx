@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../app/components/u
 import { Input } from '../../app/components/ui/input';
 import { Label } from '../../app/components/ui/label';
 import { useAuth } from '../../context/AuthContext';
+import { getPasswordChangeRequirement } from '../../utils/jwtUtils';
 
 export function AdminLogin() {
   const navigate = useNavigate();
