@@ -9,6 +9,7 @@ import { AdminLogin } from '../pages/admin/AdminLogin';
 import { BuildingsAdmin } from '../pages/admin/BuildingsAdmin';
 import { LocationsAdmin } from '../pages/admin/LocationsAdmin';
 import { RoutesAdmin } from '../pages/admin/RoutesAdmin';
+import { ResetPassword } from '../pages/ResetPassword';
 import { Home } from '../pages/public/Home';
 import { LocationsPage } from '../pages/public/Locations';
 import { RouteDetail } from '../pages/public/RouteDetail';
@@ -27,6 +28,7 @@ export default function App() {
             <Route path="/locations" element={<LocationsPage />} />
 
             <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
             <Route element={<ProtectedRoute />}>
               <Route path="/admin" element={<AdminLayout />}>

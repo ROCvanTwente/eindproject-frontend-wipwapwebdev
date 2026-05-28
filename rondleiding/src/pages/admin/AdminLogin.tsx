@@ -25,7 +25,16 @@ export function AdminLogin() {
     setLoading(true);
 
     try {
-      await login(email, password);
+      const loginResult = await login(email, password);
+
+      if (loginResult.requiresPasswordChange) {
+        const adminEmail = loginResult.email ?? email.trim();
+        sessionStorage.setItem('adminEmail', adminEmail);
+        toast.info('Wijzig eerst je wachtwoord om door te gaan');
+        navigate(`/reset-password?email=${encodeURIComponent(adminEmail)}`, { replace: true });
+        return;
+      }
+
       toast.success('Succesvol ingelogd');
       navigate('/admin', { replace: true });
     } catch (err) {

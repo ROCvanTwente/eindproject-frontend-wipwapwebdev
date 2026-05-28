@@ -3,7 +3,7 @@ import { authService } from '../services/authService';
 
 interface AuthContextValue {
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<{ requiresPasswordChange: boolean; email?: string }>;
   logout: () => void;
 }
 
@@ -16,8 +16,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
     () => ({
       isAuthenticated,
       async login(email: string, password: string) {
-        await authService.login({ email, password });
+        const result = await authService.login({ email, password });
         setIsAuthenticated(true);
+        return { requiresPasswordChange: result.requiresPasswordChange, email: result.email };
       },
       logout() {
         authService.logout();
