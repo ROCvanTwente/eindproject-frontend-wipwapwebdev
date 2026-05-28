@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { AlertCircle, CheckCircle2, KeyRound } from 'lucide-react';
 import { Button } from '../app/components/ui/button';
@@ -7,11 +7,13 @@ import { Input } from '../app/components/ui/input';
 import { Label } from '../app/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '../app/components/ui/alert';
 import { api, TOKEN_STORAGE_KEY } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import { decodeJwt, getPasswordChangeRequirement } from '../utils/jwtUtils';
 
 export function ResetPassword() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useAuth();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -21,11 +23,9 @@ export function ResetPassword() {
   const token = localStorage.getItem(TOKEN_STORAGE_KEY);
   const decoded = token ? decodeJwt(token) : null;
 
-  const email = useMemo(() => {
-    const emailFromUrl = new URLSearchParams(location.search).get('email');
-    const emailFromToken = typeof decoded?.email === 'string' ? decoded.email : decoded?.sub;
-    return emailFromToken || emailFromUrl || '';
-  }, [decoded, location.search]);
+  const emailFromUrl = new URLSearchParams(location.search).get('email');
+  const emailFromToken = typeof decoded?.sub === 'string' ? decoded.sub : decoded?.email;
+  const email = emailFromToken || emailFromUrl || '';
 
   useEffect(() => {
     if (!token) {
@@ -75,7 +75,8 @@ export function ResetPassword() {
 
       setIsSuccess(true);
       setTimeout(() => {
-        navigate('/admin', { replace: true });
+        logout();
+        navigate('/admin/login', { replace: true });
       }, 2000);
     } catch (submitError) {
       setError('Wachtwoord wijzigen is mislukt. Probeer het opnieuw.');

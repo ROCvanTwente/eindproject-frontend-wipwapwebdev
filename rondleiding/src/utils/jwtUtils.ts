@@ -1,6 +1,18 @@
-export function decodeJwt(token: string): any {
+export interface JwtClaims {
+  PasswordChanged?: string;
+  email?: string;
+  sub?: string;
+  [key: string]: unknown;
+}
+
+export function decodeJwt(token: string): JwtClaims | null {
   try {
-    const base64Url = token.split('.')[1];
+    const tokenParts = token.split('.');
+    if (tokenParts.length < 2) {
+      throw new Error('Token is malformed.');
+    }
+
+    const base64Url = tokenParts[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
     const jsonPayload = decodeURIComponent(
       atob(base64)
@@ -10,7 +22,7 @@ export function decodeJwt(token: string): any {
     );
     return JSON.parse(jsonPayload);
   } catch (error) {
-    console.error('Failed to decode JWT:', error);
+    console.error('Failed to decode JWT payload.', error);
     return null;
   }
 }
