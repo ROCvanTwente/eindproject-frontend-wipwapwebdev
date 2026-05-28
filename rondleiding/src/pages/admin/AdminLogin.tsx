@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../app/components/u
 import { Input } from '../../app/components/ui/input';
 import { Label } from '../../app/components/ui/label';
 import { useAuth } from '../../context/AuthContext';
+import { decodeJwt } from '../../utils/jwtUtils';
 
 export function AdminLogin() {
   const navigate = useNavigate();
@@ -25,7 +26,15 @@ export function AdminLogin() {
     setLoading(true);
 
     try {
-      await login(email, password);
+      const token = await login(email, password);
+      const decoded = decodeJwt(token);
+
+      if (decoded?.PasswordChanged === 'False') {
+        toast.info('Wachtwoord wijzigen is vereist');
+        navigate('/reset-password', { replace: true });
+        return;
+      }
+
       toast.success('Succesvol ingelogd');
       navigate('/admin', { replace: true });
     } catch (err) {
