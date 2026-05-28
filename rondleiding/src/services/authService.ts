@@ -1,5 +1,6 @@
 import { api, REFRESH_STORAGE_KEY, TOKEN_STORAGE_KEY, unwrapResponseData } from './api';
 import type { LoginRequest } from '../types';
+import { decodeJwt } from '../utils/jwtUtils';
 
 interface LoginResponseShape {
   token?: string;
@@ -34,10 +35,14 @@ export const authService = {
       localStorage.setItem(REFRESH_STORAGE_KEY, data.refreshToken);
     }
 
+    // Decode the JWT to get the PasswordChanged claim
+    const decoded = decodeJwt(token);
+    const requiresPasswordChange = String(decoded?.PasswordChanged).toLowerCase() === 'false';
+
     return {
       token,
       refreshToken: data.refreshToken,
-      requiresPasswordChange: !!data.requiresPasswordChange,
+      requiresPasswordChange,
       email: data.email ?? data.user?.email ?? payload.email,
     };
   },
