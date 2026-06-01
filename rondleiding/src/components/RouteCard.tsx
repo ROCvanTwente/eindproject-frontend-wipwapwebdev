@@ -11,20 +11,20 @@ interface RouteCardProps {
 export function RouteCard({ route }: RouteCardProps) {
   return (
     <Card className="h-full">
-      <CardHeader>
-        <CardTitle className="text-lg">{route.name}</CardTitle>
+      <CardHeader className="pb-4">
+        <CardTitle className="text-lg lowercase">{route.name}</CardTitle>
         <CardDescription>{route.description}</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-2 text-sm text-muted-foreground">
+      <CardContent className="space-y-3 text-sm text-muted-foreground">
         <p className="flex items-center gap-2">
           <Clock3 className="size-4" />
           {route.estimatedTimeMinutes} minuten
         </p>
         <p>Moeilijkheid: {route.difficulty}</p>
       </CardContent>
-      <CardFooter>
-        <Button asChild className="w-full">
-          <Link to={`/routes/${route.id}`}>Bekijk route</Link>
+      <CardFooter className="pt-0">
+        <Button asChild className="w-full uppercase tracking-[0.08em]">
+          <Link to={`/routes/${route.id}`}>bekijk route</Link>
         </Button>
       </CardFooter>
     </Card>

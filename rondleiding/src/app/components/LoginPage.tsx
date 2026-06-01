@@ -45,10 +45,10 @@ export function LoginPage({ onLogin }: LoginPageProps) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-12">
       <Card className="w-full max-w-md border-gray-200/80 bg-white/95 shadow-xl">
-        <CardHeader className="space-y-1">
+          <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-semibold">Inloggen</CardTitle>
           <CardDescription>
-            Verbind met een ASP.NET MVC auth-controller via de nieuwe endpoint.
+            Log in met je ROC-account om toegang te krijgen tot het beheerpaneel.
           </CardDescription>
         </CardHeader>
 
@@ -67,7 +67,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                   id="login-email"
                   type="email"
                   value={email}
-                  placeholder="naam@voorbeeld.nl"
+                  placeholder="naam@rocvantwente.nl"
                   onChange={(event) => setEmail(event.target.value)}
                 />
               </div>

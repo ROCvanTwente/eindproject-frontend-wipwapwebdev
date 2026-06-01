@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
-import { ChevronLeft, ChevronRight, X, MapPin } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, MapPin, Play, Pause } from 'lucide-react';
+import { useSpeech } from '../../hooks/useSpeech';
 import type { TourPoint } from './types';
 
 interface TourNavigatorProps {
@@ -11,10 +12,25 @@ interface TourNavigatorProps {
 
 export function TourNavigator({ tourPoint, onClose }: TourNavigatorProps) {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const { speak, pause, resume, stop, isPlaying, isSpeechSupported } = useSpeech();
   const sortedSlides = [...tourPoint.slides].sort((a, b) => a.order - b.order);
   const currentSlide = sortedSlides[currentSlideIndex];
   const isFirstSlide = currentSlideIndex === 0;
   const isLastSlide = currentSlideIndex === sortedSlides.length - 1;
+
+  const handlePlayDescription = () => {
+    if (tourPoint.description) {
+      speak(tourPoint.description);
+    }
+  };
+
+  const handlePauseDescription = () => {
+    if (isPlaying) {
+      pause();
+    } else {
+      resume();
+    }
+  };
 
   const handleNext = () => {
     if (!isLastSlide) {
@@ -134,10 +150,41 @@ export function TourNavigator({ tourPoint, onClose }: TourNavigatorProps) {
         {tourPoint.description && (
           <Card className="mt-6" style={{ backgroundColor: 'var(--roc-blue)' }}>
             <CardContent className="pt-6" style={{ color: 'white' }}>
-              <h3 className="text-sm font-bold mb-2 uppercase tracking-wide opacity-80">
-                over dit punt
-              </h3>
-              <p>{tourPoint.description}</p>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <h3 className="text-sm font-bold mb-2 uppercase tracking-wide opacity-80">
+                    over dit punt
+                  </h3>
+                  <p>{tourPoint.description}</p>
+                </div>
+                {isSpeechSupported && (
+                  <div className="flex gap-2 flex-shrink-0">
+                    {!isPlaying ? (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={handlePlayDescription}
+                        title="Voorlezen"
+                        className="gap-2"
+                      >
+                        <Play className="w-4 h-4" />
+                        <span className="text-xs">Afspelen</span>
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={handlePauseDescription}
+                        title="Pauzeren"
+                        className="gap-2"
+                      >
+                        <Pause className="w-4 h-4" />
+                        <span className="text-xs">Pauzeren</span>
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         )}

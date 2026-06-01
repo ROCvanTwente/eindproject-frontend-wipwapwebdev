@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { Button } from '../../app/components/ui/button';
 import { Input } from '../../app/components/ui/input';
 import { Label } from '../../app/components/ui/label';
+import { Textarea } from '../../app/components/ui/textarea';
 import { buildingService } from '../../services/buildingService';
 import { locationService } from '../../services/locationService';
 import type { Building, Location } from '../../types';
@@ -91,7 +92,7 @@ export function LocationsAdmin() {
         </div>
         <div className="space-y-2">
           <Label htmlFor="location-description">Beschrijving</Label>
-          <Input
+          <Textarea
             id="location-description"
             value={form.description}
             onChange={(event) => setForm((prev) => ({ ...prev, description: event.target.value }))}

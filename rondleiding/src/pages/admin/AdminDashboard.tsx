@@ -29,30 +29,31 @@ export function AdminDashboard() {
 
   return (
     <section className="space-y-4">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+      <p className="roc-kicker text-primary">beheer</p>
+      <h1 className="roc-title">dashboard</h1>
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>
           <CardHeader>
-            <CardTitle>Routes</CardTitle>
+            <CardTitle className="lowercase">routes</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-semibold">{stats.routes}</p>
+            <p className="text-3xl font-semibold text-primary">{stats.routes}</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Locaties</CardTitle>
+            <CardTitle className="lowercase">locaties</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-semibold">{stats.locations}</p>
+            <p className="text-3xl font-semibold text-primary">{stats.locations}</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Gebouwen</CardTitle>
+            <CardTitle className="lowercase">gebouwen</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-semibold">{stats.buildings}</p>
+            <p className="text-3xl font-semibold text-primary">{stats.buildings}</p>
           </CardContent>
         </Card>
       </div>

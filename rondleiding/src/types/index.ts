@@ -19,6 +19,7 @@ export interface RouteLocation {
   id?: string;
   locationId: string;
   locationName?: string;
+  locationDescription?: string;
   order: number;
   direction?: string;
   estimatedMinutes?: number;
