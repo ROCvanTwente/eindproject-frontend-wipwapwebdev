@@ -43,64 +43,71 @@ export function LocationsPage() {
   }, [locations, search, buildingFilter, floorFilter]);
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-10">
-      <h1 className="text-3xl font-bold">Locaties</h1>
-      <p className="mt-2 text-muted-foreground">Zoek en filter locaties binnen de school.</p>
+    <main className="roc-page-shell">
+      <section className="roc-strip roc-strip--white">
+        <div className="roc-content-wrap roc-band">
+          <div>
+            <p className="roc-kicker text-primary">locaties</p>
+            <h1 className="roc-title mt-3">zoek en filter locaties binnen de school</h1>
+            <p className="roc-copy mt-4">De filterstrook volgt de diagonale en strakke lay-out uit de huisstijl.</p>
+          </div>
 
-      <section className="mt-6 grid gap-3 rounded-xl border p-4 sm:grid-cols-3">
-        <div className="space-y-2 sm:col-span-3 lg:col-span-1">
-          <Label htmlFor="location-search">Zoeken</Label>
-          <Input
-            id="location-search"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Zoek op naam of beschrijving"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="building-filter">Gebouw</Label>
-          <select
-            id="building-filter"
-            value={buildingFilter}
-            onChange={(event) => setBuildingFilter(event.target.value)}
-            className="h-9 w-full rounded-md border bg-background px-3 text-sm"
-          >
-            <option value="all">Alle gebouwen</option>
-            {buildings.map((building) => (
-              <option key={building.id} value={building.id}>
-                {building.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="floor-filter">Verdieping</Label>
-          <select
-            id="floor-filter"
-            value={floorFilter}
-            onChange={(event) => setFloorFilter(event.target.value)}
-            className="h-9 w-full rounded-md border bg-background px-3 text-sm"
-          >
-            <option value="all">Alle verdiepingen</option>
-            {floors.map((floor) => (
-              <option key={floor} value={floor}>
-                {floor}
-              </option>
-            ))}
-          </select>
+          <section className="roc-panel grid gap-4 p-5 sm:grid-cols-3 md:p-6">
+            <div className="space-y-2 sm:col-span-3 lg:col-span-1">
+              <Label htmlFor="location-search">zoeken</Label>
+              <Input
+                id="location-search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="zoek op naam of beschrijving"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="building-filter">gebouw</Label>
+              <select
+                id="building-filter"
+                value={buildingFilter}
+                onChange={(event) => setBuildingFilter(event.target.value)}
+                className="h-11 w-full rounded-[2mm] border border-border bg-background px-3 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
+              >
+                <option value="all">alle gebouwen</option>
+                {buildings.map((building) => (
+                  <option key={building.id} value={building.id}>
+                    {building.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="floor-filter">verdieping</Label>
+              <select
+                id="floor-filter"
+                value={floorFilter}
+                onChange={(event) => setFloorFilter(event.target.value)}
+                className="h-11 w-full rounded-[2mm] border border-border bg-background px-3 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
+              >
+                <option value="all">alle verdiepingen</option>
+                {floors.map((floor) => (
+                  <option key={floor} value={floor}>
+                    {floor}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </section>
+
+          {loading ? <p>locaties laden...</p> : null}
+          {error ? <p className="text-destructive">{error}</p> : null}
+
+          {!loading && !error ? (
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {filteredLocations.map((location) => (
+                <LocationCard key={location.id} location={location} />
+              ))}
+            </div>
+          ) : null}
         </div>
       </section>
-
-      {loading ? <p className="mt-6">Locaties laden...</p> : null}
-      {error ? <p className="mt-6 text-destructive">{error}</p> : null}
-
-      {!loading && !error ? (
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredLocations.map((location) => (
-            <LocationCard key={location.id} location={location} />
-          ))}
-        </div>
-      ) : null}
     </main>
   );
 }

@@ -11,6 +11,7 @@ function normalizeLocations(items: any[] | undefined): RouteLocation[] {
       id: item.id ? String(item.id) : undefined,
       locationId: String(item.locationId ?? item.location?.id ?? ''),
       locationName: item.locationName ?? item.location?.name ?? '',
+      locationDescription: item.locationDescription ?? item.location?.description ?? '',
       order: Number(item.order ?? index),
       direction: item.direction ?? '',
       estimatedMinutes: item.estimatedMinutes ? Number(item.estimatedMinutes) : undefined,

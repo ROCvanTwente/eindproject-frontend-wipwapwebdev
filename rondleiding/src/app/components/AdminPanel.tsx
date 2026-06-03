@@ -172,7 +172,7 @@ export function AdminPanel() {
                     id="point-name"
                     value={editingPoint.name}
                     onChange={(e) => setEditingPoint({ ...editingPoint, name: e.target.value })}
-                    placeholder="bijvoorbeeld: hoofdingang"
+                    placeholder="Hoofdingang"
                   />
                 </div>
 
@@ -256,7 +256,7 @@ export function AdminPanel() {
                             <Textarea
                               value={slide.instruction}
                               onChange={(e) => handleUpdateSlide(slide.id, 'instruction', e.target.value)}
-                              placeholder="bijvoorbeeld: loop 200m rechtdoor"
+                              placeholder="Loop 200m rechtdoor"
                               rows={2}
                             />
                             <Input

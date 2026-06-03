@@ -1,0 +1,109 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\tomva\\Documents\\GitHub\\eindproject-frontend-wipwapwebdev\\rondleiding\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\tomva\\Documents\\GitHub\\eindproject-frontend-wipwapwebdev\\rondleiding\\src\\services\\authService.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\services\\authService.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\tomva\\Documents\\GitHub\\eindproject-frontend-wipwapwebdev\\rondleiding\\src\\pages\\admin\\AdminLayout.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\pages\\admin\\AdminLayout.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\tomva\\Documents\\GitHub\\eindproject-frontend-wipwapwebdev\\rondleiding\\src\\pages\\admin\\AdminLogin.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\pages\\admin\\AdminLogin.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\tomva\\Documents\\GitHub\\eindproject-frontend-wipwapwebdev\\rondleiding\\src\\pages\\admin\\AdminDashboard.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\pages\\admin\\AdminDashboard.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\tomva\\Documents\\GitHub\\eindproject-frontend-wipwapwebdev\\rondleiding\\src\\services\\api.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\services\\api.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "authService.ts",
+              "DocumentMoniker": "C:\\Users\\tomva\\Documents\\GitHub\\eindproject-frontend-wipwapwebdev\\rondleiding\\src\\services\\authService.ts",
+              "RelativeDocumentMoniker": "src\\services\\authService.ts",
+              "ToolTip": "C:\\Users\\tomva\\Documents\\GitHub\\eindproject-frontend-wipwapwebdev\\rondleiding\\src\\services\\authService.ts",
+              "RelativeToolTip": "src\\services\\authService.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-28T10:01:27.089Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AdminLayout.tsx",
+              "DocumentMoniker": "C:\\Users\\tomva\\Documents\\GitHub\\eindproject-frontend-wipwapwebdev\\rondleiding\\src\\pages\\admin\\AdminLayout.tsx",
+              "RelativeDocumentMoniker": "src\\pages\\admin\\AdminLayout.tsx",
+              "ToolTip": "C:\\Users\\tomva\\Documents\\GitHub\\eindproject-frontend-wipwapwebdev\\rondleiding\\src\\pages\\admin\\AdminLayout.tsx",
+              "RelativeToolTip": "src\\pages\\admin\\AdminLayout.tsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-28T10:01:24.124Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AdminLogin.tsx",
+              "DocumentMoniker": "C:\\Users\\tomva\\Documents\\GitHub\\eindproject-frontend-wipwapwebdev\\rondleiding\\src\\pages\\admin\\AdminLogin.tsx",
+              "RelativeDocumentMoniker": "src\\pages\\admin\\AdminLogin.tsx",
+              "ToolTip": "C:\\Users\\tomva\\Documents\\GitHub\\eindproject-frontend-wipwapwebdev\\rondleiding\\src\\pages\\admin\\AdminLogin.tsx",
+              "RelativeToolTip": "src\\pages\\admin\\AdminLogin.tsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-28T10:01:22.953Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AdminDashboard.tsx",
+              "DocumentMoniker": "C:\\Users\\tomva\\Documents\\GitHub\\eindproject-frontend-wipwapwebdev\\rondleiding\\src\\pages\\admin\\AdminDashboard.tsx",
+              "RelativeDocumentMoniker": "src\\pages\\admin\\AdminDashboard.tsx",
+              "ToolTip": "C:\\Users\\tomva\\Documents\\GitHub\\eindproject-frontend-wipwapwebdev\\rondleiding\\src\\pages\\admin\\AdminDashboard.tsx",
+              "RelativeToolTip": "src\\pages\\admin\\AdminDashboard.tsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-28T10:01:14.396Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "api.ts",
+              "DocumentMoniker": "C:\\Users\\tomva\\Documents\\GitHub\\eindproject-frontend-wipwapwebdev\\rondleiding\\src\\services\\api.ts",
+              "RelativeDocumentMoniker": "src\\services\\api.ts",
+              "ToolTip": "C:\\Users\\tomva\\Documents\\GitHub\\eindproject-frontend-wipwapwebdev\\rondleiding\\src\\services\\api.ts",
+              "RelativeToolTip": "src\\services\\api.ts",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-28T10:01:06.763Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

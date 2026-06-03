@@ -1,0 +1,138 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "name": "ROC van Twente Visuele Identiteit Richtlijnen",
+  "version": "1.0.0",
+  "author": "Tom van der Kolk",
+  "description": "Design tokens en huisstijlnormering voor de ontwikkeling van digitale uitingen conform de officiële ROC van Twente brand identity.",
+  "color_palette": {
+    "primary": {
+      "corporate_blue": {
+        "hex": "#004898",
+        "description": "ROC blauw. Vaste basiskleur voor corporate uitingen en logo."
+      },
+      "corporate_red": {
+        "hex": "#E3001A",
+        "description": "ROC rood. De kleur van Twente. Gebruikt voor het woord 'van' in het logo."
+      }
+    },
+    "supporting_palette_digital": {
+      "yellow_gold": ["#D39700", "#F0D500", "#FFF265"],
+      "orange": ["#B84417", "#FF6600", "#F2953F"],
+      "red_pink": ["#C30718", "#E3007A", "#E75294"],
+      "magenta_purple": ["#D30073", "#80197F", "#884694"],
+      "deep_blue": ["#162883", "#504794", "#7A6EAC"],
+      "sky_blue": ["#008BD0", "#0064AD", "#009EE1", "#287CBB", "#00BOE6"],
+      "teal_green": ["#007555", "#009570", "#00AAA5"],
+      "bright_green": ["#009832", "#58AC27", "#96C03A"],
+      "lime_yellow": ["#7FA312", "#B2C900", "#C7D44F"]
+    },
+    "neutral": {
+      "text_dark": "#333333",
+      "background_white": "#FFFFFF",
+      "link_blue": "#0064AD"
+    }
+  },
+  "typography": {
+    "fonts": {
+      "headers_static": {
+        "family": "Canaro",
+        "weights": ["Bold", "Light"],
+        "description": "Vaste huisstijlletter voor statische tekst en koppen in drukwerk en high-end digitale koppen."
+      },
+      "body_variable": {
+        "family": "Open Sans",
+        "fallback": "Calibri",
+        "weights": ["Light", "Regular", "Bold"],
+        "description": "Gebruikt voor variabele content, broodtekst en nieuwsbrieven om licentiekosten te voorkomen."
+      }
+    },
+    "digital_scale": {
+      "desktop": {
+        "h1": { "font": "Canaro Bold", "size_lineheight": "30px/34px" },
+        "h2": { "font": "Canaro Bold", "size_lineheight": "18px/21px" },
+        "h3": { "font": "Canaro Bold", "size_lineheight": "14px/17px" },
+        "introduction": { "font": "Canaro Light + Bold", "size_lineheight": "25px/32px" },
+        "paragraph": { "font": "Open Sans Regular", "size_lineheight": "16px/22px", "color": "#333333" },
+        "links": { "font": "Open Sans Regular", "size_lineheight": "16px/22px", "color": "#0064AD" },
+        "breadcrumbs": { "font": "Open Sans Regular", "size_lineheight": "14px/20px", "colors": ["#0064AD", "#333333"] },
+        "button_labels": { "font": "Canaro Bold", "size_lineheight": "30px/34px" }
+      },
+      "tablet": {
+        "h1": { "font": "Canaro Bold", "size_lineheight": "26px/30px" },
+        "h2": { "font": "Canaro Bold", "size_lineheight": "18px/21px" },
+        "h3": { "font": "Canaro Bold", "size_lineheight": "14px/17px" },
+        "introduction": { "font": "Canaro Light + Bold", "size_lineheight": "25px/32px" },
+        "paragraph": { "font": "Open Sans Regular", "size_lineheight": "16px/22px" }
+      },
+      "mobile": {
+        "h1": { "font": "Canaro Bold", "size_lineheight": "22px/25px" },
+        "h2": { "font": "Canaro Bold", "size_lineheight": "18px/21px" },
+        "h3": { "font": "Canaro Bold", "size_lineheight": "14px/17px" },
+        "introduction": { "font": "Canaro Light + Bold", "size_lineheight": "22px/28px" },
+        "paragraph": { "font": "Open Sans Regular", "size_lineheight": "16px/22px" }
+      }
+    },
+    "copywriting_rules": {
+      "headings_case": "lowercase",
+      "headings_exception": "Koppen en titels ALTIJD zonder hoofdletter beginnen, BEHALVE bij plaatsnamen, persoonsnamen, opleidingsnamen of organisaties.",
+      "corporate_name_case": "In lopende tekst wordt 'ROC van Twente' of 'VAVO' altijd met de reguliere hoofdletters geschreven; in een kop conform de lowercase regels.",
+      "dictionary_leading": "Groene Boekje en wettelijke schrijfwijze zijn leidend bij twijfel."
+    }
+  },
+  "layout_grid": {
+    "responsive_breakpoints": {
+      "mobile_to_tablet": "375px",
+      "tablet_to_desktop": "768px",
+      "desktop_base": "1280px",
+      "desktop_xl": "1500px"
+    },
+    "desktop_xl_scaling": "Vanaf schermbreedte > 1500px wordt de volledige interface vergroot naar 105%.",
+    "structure": {
+      "vertical_sections": "Opgebouwd uit 'stroken' (vlakken van kleur of beeld) die doorlopen tot de volledige breedte van de browser.",
+      "columns_a4_equivalent": {
+        "count": 4,
+        "gutter": "10mm"
+      }
+    }
+  },
+  "brand_elements": {
+    "logo_rules": {
+      "structure": "Twee regels tekst. 'Twente' vormt de basis onderop. Het woord 'van' staat in rood daarboven.",
+      "casing": "Onderkast (lowercase) om het sociale en laagdrempelige karakter te benadrukken.",
+      "background_preference": "Het tweekleurige standaardlogo bij voorkeur uitsluitend op een witte achtergrond plaatsen.",
+      "contrast_fallback": "Bij onvoldoende contrast of donkere achtergronden het specifieke diapositieve (enkelkleurige) logo gebruiken.",
+      "prohibitions": [
+        "De kleuren van het logo mogen nooit worden omgedraaid.",
+        "Het enkelkleurige logo mag nooit in meer dan één kleur worden toegepast.",
+        "Het logo mag nooit door een grafisch vlak of lijn gesneden worden."
+      ],
+      "bounding_box_ratio": "De bounding box garandeert witruimte. Op A4-formaat is de breedte 1/3 van de pagina (70mm x 42mm)."
+    },
+    "signature_style_element": {
+      "name": "De Diagonale Driehoek",
+      "geometry": {
+        "angle_deg": 67,
+        "horizontal_division": "5 gelijke delen",
+        "vertical_division": "3 gelijke delen"
+      },
+      "implementation": {
+        "color_blend_mode": "multiply",
+        "description": "Kleurvlakken worden over afbeeldingen heen 'vermenigvuldigd' (multiply). Hierdoor werkt de kleur door op de foto zonder dat het beeld flets wordt of de foto minder zichtbaar is. Dit creëert de kenmerkende witte driehoek-vorm.",
+        "color_source": "Uitsluitend kleuren kiezen uit het ondersteunende palet. Het 'prikken' of samengestelde kleuren extraheren uit de foto is niet toegestaan."
+      },
+      "inserts_cards": {
+        "border_radius": "2mm",
+        "grid_alignment": "Plaatsen op het basistramien wanneer ze ondersteunend zijn aan de tekst."
+      }
+    }
+  },
+  "photography_rules": {
+    "pillars": {
+      "angle": "Laag camerastandpunt ('Kijk, dit is onze student! Everyone is a hero / Self Made').",
+      "depth_of_field": "Weinig scherptediepte gebruiken voor extra dynamiek en focus op de actie (de mens en de handeling).",
+      "authenticity": "Echte situaties in actie in plaats van geposeerde settings. Geen extreme close-ups en geen extreem uitgezoomde beelden.",
+      "diversity": "Toon de brede diversiteit (jongere studenten, avondonderwijs, docenten, ouders en medewerkers). Voorkom stereotypen.",
+      "post_processing": "Zorg voor sprekend contrast en kleur, maar voorkom overbewerking. Filters of een 'Instagram-look' zijn streng verboden."
+    }
+  }
+}
