@@ -42,17 +42,11 @@ export function RouteDetail() {
                 return;
             }
 
-            console.log("=== START ROUTE DATA LADEN ===");
-            console.log("Gevraagd Route ID:", routeId);
-
             try {
                 const [rawRoute, allLocations] = await Promise.all([
                     routeService.getById(routeId),
                     locationService.getAll()
                 ]);
-
-                console.log("Raw Route van Database:", rawRoute);
-                console.log("Aantal Locaties in Database:", allLocations.length);
 
                 const locationMap = new Map<string, Location>(
                     allLocations.map((loc) => [loc.id, loc])
@@ -61,11 +55,6 @@ export function RouteDetail() {
                 // Mappen en verrijken
                 const enrichedLocations = (rawRoute.locations || []).map((step: any, index: number) => {
                     const linkedLocation = locationMap.get(step.locationId);
-                    
-                    console.log(`Stap index [${index}] -> Gekoppelde locatie gevonden?`, linkedLocation ? "JA" : "NEE");
-                    if (linkedLocation) {
-                        console.log(`Stap index [${index}] -> Locatie ImageUrllengte:`, linkedLocation.imageUrl?.length || 0);
-                    }
 
                     // Precedentie bepalen
                     const finalImageUrl = step.imageUrl || linkedLocation?.imageUrl || FALLBACK_IMAGE_URL;
@@ -82,9 +71,6 @@ export function RouteDetail() {
                     ...rawRoute,
                     locations: enrichedLocations
                 } as unknown as GuideRoute;
-
-                console.log("Eindresultaat verrijkte Route:", enrichedRoute);
-                console.log("=== EINDE ROUTE DATA LADEN ===");
 
                 setRoute(enrichedRoute);
             } catch (err) {

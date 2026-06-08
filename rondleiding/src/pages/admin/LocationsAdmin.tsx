@@ -103,14 +103,11 @@ export function LocationsAdmin() {
       return;
     }
 
-    console.log(`[Selectie] Origineel bestand: ${selectedFile.name}, Grootte: ${(selectedFile.size / 1024 / 1024).toFixed(2)} MB`);
     setIsConvertingImage(true);
 
     try {
       // Hier wordt de afbeelding verkleind naar max 1024px breed/hoog en gecomprimeerd naar 70% kwaliteit
       const compressedBase64 = await compressAndResizeImage(selectedFile, 1024, 1024, 0.7);
-      
-      console.log(`[Conversie] Compressie succesvol. Nieuwe Base64 lengte: ${compressedBase64.length}`);
 
       setForm((prev) => ({ ...prev, imageUrl: compressedBase64 }));
       toast.success('Afbeelding succesvol verkleind en ingeladen');
@@ -157,8 +154,6 @@ export function LocationsAdmin() {
         floor: form.floor,
         buildingId: form.buildingId || undefined,
       };
-
-      console.log("[Admin] Submit payload lengte:", payload.imageUrl?.length);
 
       if (editingId) {
         await locationService.update(editingId, payload);
