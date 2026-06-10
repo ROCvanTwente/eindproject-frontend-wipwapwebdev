@@ -6,7 +6,9 @@ function normalize(data: any): Location {
     id: String(data.id),
     name: data.name ?? '',
     description: data.description ?? '',
-    imageUrl: data.imageUrl ?? data.imageURL ?? '',
+    // We behouden de checks op verschillende schrijfwijzen voor de robuustheid,
+    // maar zonder de logs.
+    imageUrl: data.imageUrl ?? data.image_url ?? data.imageURL ?? '',
     floor: data.floor ?? '',
     buildingId: data.buildingId ? String(data.buildingId) : undefined,
     buildingName: data.buildingName ?? data.building?.name ?? '',
@@ -16,7 +18,8 @@ function normalize(data: any): Location {
 export const locationService = {
   async getAll(): Promise<Location[]> {
     const response = await api.get('/api/location');
-    const data = unwrapResponseData<any[]>(response.data) ?? [];
+    const wrappedData = unwrapResponseData<any[]>(response.data);
+    const data = wrappedData ?? [];
     return data.map(normalize);
   },
 
