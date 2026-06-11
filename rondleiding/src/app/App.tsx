@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import { Toaster } from 'sonner';
 import { Navigation } from '../components/Navigation';
+import { AnalyticsTracker } from '../components/AnalyticsTracker';
 import { ProtectedRoute } from '../components/ProtectedRoute';
 import { AuthProvider } from '../context/AuthContext';
 import { AdminDashboard } from '../pages/admin/AdminDashboard';
@@ -9,6 +10,7 @@ import { AdminLogin } from '../pages/admin/AdminLogin';
 import { BuildingsAdmin } from '../pages/admin/BuildingsAdmin';
 import { LocationsAdmin } from '../pages/admin/LocationsAdmin';
 import { RoutesAdmin } from '../pages/admin/RoutesAdmin';
+import { StatisticsAdmin } from '../pages/admin/StatisticsAdmin';
 import { ResetPassword } from '../pages/ResetPassword';
 import { Home } from '../pages/public/Home';
 import { LocationsPage } from '../pages/public/Locations';
@@ -20,6 +22,7 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <div className="min-h-screen bg-background text-foreground">
+          <AnalyticsTracker />
           <Navigation />
           <Routes>
             <Route path="/" element={<Home />} />
@@ -36,6 +39,7 @@ export default function App() {
                 <Route path="buildings" element={<BuildingsAdmin />} />
                 <Route path="locations" element={<LocationsAdmin />} />
                 <Route path="routes" element={<RoutesAdmin />} />
+                <Route path="statistics" element={<StatisticsAdmin />} />
               </Route>
             </Route>
 
