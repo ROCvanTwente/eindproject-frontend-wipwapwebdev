@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router";
 import { ChevronLeft, ChevronRight, Pause, Play, X } from "lucide-react";
 import { Button } from "../../app/components/ui/button";
 import { locationService } from "../../services/locationService";
+import { analyticsService } from "../../services/analyticsService";
 import { routeService } from "../../services/routeService";
 import type { GuideRoute } from "../../types";
 
@@ -53,6 +54,7 @@ export function RouteDetail() {
                 };
 
                 setRoute(enrichedRoute);
+                analyticsService.trackRouteStart(routeId, enrichedRoute.name);
                 setActiveStep(0);
             })
             .catch((err) =>
