@@ -1,6 +1,4 @@
 {
-  "buildCommand": "npm --prefix rondleiding install && npm --prefix rondleiding run build",
-  "outputDirectory": "rondleiding/dist",
   "rewrites": [
     {
       "source": "/api/:path*",
