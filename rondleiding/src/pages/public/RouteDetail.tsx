@@ -5,7 +5,20 @@ import { Button } from "../../app/components/ui/button";
 import { locationService } from "../../services/locationService";
 import { analyticsService } from "../../services/analyticsService";
 import { routeService } from "../../services/routeService";
-import type { GuideRoute } from "../../types";
+import type { GuideRoute, Location } from "../../types";
+
+const FALLBACK_IMAGE_URL = "https://images.unsplash.com/photo-1582407947304-fd86f028f716?q=80&w=1000&auto=format&fit=crop";
+
+interface EnrichedStep {
+    id: string; 
+    locationId: string;
+    order: number;
+    locationName: string;
+    locationDescription: string;
+    imageUrl: string;
+    direction?: string;
+    estimatedMinutes?: number;
+}
 
 export function RouteDetail() {
     const { routeId } = useParams();
@@ -14,7 +27,6 @@ export function RouteDetail() {
     const [error, setError] = useState("");
     const [activeStep, setActiveStep] = useState(0);
 
-    // Handmatige TTS Status & Woord-index tracking
     const [isPlaying, setIsPlaying] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
     const [currentWordIndex, setCurrentWordIndex] = useState<number>(-1);
@@ -22,57 +34,72 @@ export function RouteDetail() {
 
     const textScrollContainerRef = useRef<HTMLDivElement>(null);
 
+    // Data laden met async/await voor betere foutafhandeling en gegarandeerde logs
     useEffect(() => {
-        if (!routeId) {
-            setError("route niet gevonden");
-            setLoading(false);
-            return;
-        }
+        async function fetchAndEnrichData() {
+            if (!routeId) {
+                setError("route niet gevonden");
+                setLoading(false);
+                return;
+            }
 
-        Promise.all([routeService.getById(routeId), locationService.getAll()])
-            .then(([result, locations]) => {
-                const locationMap = new Map(
-                    locations.map((location) => [location.id, location]),
+            try {
+                const [rawRoute, allLocations] = await Promise.all([
+                    routeService.getById(routeId),
+                    locationService.getAll()
+                ]);
+
+                const locationMap = new Map<string, Location>(
+                    allLocations.map((loc) => [loc.id, loc])
                 );
-                const enrichedRoute: GuideRoute = {
-                    ...result,
-                    locations: result.locations?.map((step) => {
-                        const location = locationMap.get(step.locationId);
-                        return {
-                            ...step,
-                            locationName:
-                                step.locationName || location?.name || "",
-                            locationDescription:
-                                step.locationDescription ||
-                                location?.description ||
-                                "",
-                            imageUrl:
-                                (location as any)?.imageUrl ||
-                                "https://images.unsplash.com/photo-1582407947304-fd86f028f716?q=80&w=1000&auto=format&fit=crop",
-                        };
-                    }),
-                };
+
+                // Mappen en verrijken
+                const enrichedLocations = (rawRoute.locations || []).map((step: any, index: number) => {
+                    const linkedLocation = locationMap.get(step.locationId);
+
+                    // Precedentie bepalen
+                    const finalImageUrl = step.imageUrl || linkedLocation?.imageUrl || FALLBACK_IMAGE_URL;
+
+                    return {
+                        ...step,
+                        locationName: step.locationName || linkedLocation?.name || `Stap ${index + 1}`,
+                        locationDescription: step.locationDescription || linkedLocation?.description || "",
+                        imageUrl: finalImageUrl,
+                    };
+                });
+
+                const enrichedRoute = {
+                    ...rawRoute,
+                    locations: enrichedLocations
+                } as unknown as GuideRoute;
 
                 setRoute(enrichedRoute);
-                analyticsService.trackRouteStart(routeId, enrichedRoute.name);
-                setActiveStep(0);
-            })
-            .catch((err) =>
-                setError(
-                    err instanceof Error ? err.message : "route laden mislukt",
-                ),
-            )
-            .finally(() => setLoading(false));
+            } catch (err) {
+                console.error("CRASH TIJDENS DATA LADEN:", err);
+                setError(err instanceof Error ? err.message : "Route laden mislukt");
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchAndEnrichData();
     }, [routeId]);
 
-    const orderedSteps = useMemo(
-        () =>
-            (route?.locations ?? []).slice().sort((a, b) => a.order - b.order),
-        [route],
-    );
-    const currentStep = orderedSteps[activeStep];
+    // Sorteer de stappen
+    const orderedSteps = useMemo(() => {
+        if (!route || !route.locations) return [];
+        return (route.locations as unknown as EnrichedStep[])
+            .slice()
+            .sort((a, b) => a.order - b.order);
+    }, [route]);
+    
+    // Huidige stap bepalen
+    const currentStep = useMemo(() => {
+        if (orderedSteps.length === 0 || activeStep >= orderedSteps.length) return null;
+        return orderedSteps[activeStep];
+    }, [orderedSteps, activeStep]);
 
-    // Stop TTS en scroll terug naar boven zodra je naar een andere stap gaat
+    // Effect bij wisselen van stap (voor TTS en scrollen)
     useEffect(() => {
         stopSpeech();
         if (textScrollContainerRef.current) {
@@ -80,17 +107,14 @@ export function RouteDetail() {
         }
     }, [activeStep]);
 
-    // Schoon de spraak op als de component unmount
     useEffect(() => {
         return () => {
             window.speechSynthesis.cancel();
         };
     }, []);
 
-    // Volledig betrouwbare native TTS afhandeling met boundary-tracking per woord
     const startSpeech = (text: string) => {
         window.speechSynthesis.cancel();
-
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = "nl-NL";
         utteranceRef.current = utterance;
@@ -104,25 +128,16 @@ export function RouteDetail() {
             if (event.name === "word") {
                 const textUpToBoundary = text.substring(0, event.charIndex);
                 const wordsUpToBoundary = textUpToBoundary.trim().split(/\s+/);
-                const wordCount =
-                    textUpToBoundary.trim() === ""
-                        ? 0
-                        : wordsUpToBoundary.length;
+                const wordCount = textUpToBoundary.trim() === "" ? 0 : wordsUpToBoundary.length;
                 setCurrentWordIndex(wordCount);
 
-                // OPTIONEEL: Automatisch de tekstcontainer meescrollen met de gesproken woorden
                 const container = textScrollContainerRef.current;
                 if (container) {
-                    const wordsElements =
-                        container.getElementsByClassName("tts-word");
-                    const activeWordElement = wordsElements[
-                        wordCount
-                    ] as HTMLElement;
+                    const wordsElements = container.getElementsByClassName("tts-word");
+                    const activeWordElement = wordsElements[wordCount] as HTMLElement;
                     if (activeWordElement) {
                         container.scrollTo({
-                            top:
-                                activeWordElement.offsetTop -
-                                container.clientHeight / 2,
+                            top: activeWordElement.offsetTop - container.clientHeight / 2,
                             behavior: "smooth",
                         });
                     }
@@ -130,14 +145,8 @@ export function RouteDetail() {
             }
         };
 
-        utterance.onend = () => {
-            resetSpeechState();
-        };
-
-        utterance.onerror = () => {
-            resetSpeechState();
-        };
-
+        utterance.onend = () => resetSpeechState();
+        utterance.onerror = () => resetSpeechState();
         window.speechSynthesis.speak(utterance);
     };
 
@@ -196,18 +205,15 @@ export function RouteDetail() {
                 {error}
             </div>
         );
-    if (!route || orderedSteps.length === 0) return null;
+        
+    if (!route || orderedSteps.length === 0 || !currentStep) return null;
 
-    // Split de tekst van de HUIDIGE stap op in woorden
-    const stepText =
-        currentStep?.locationDescription ||
-        "geen beschrijving toegevoegd aan deze stap.";
+    const stepText = currentStep?.locationDescription || "geen beschrijving toegevoegd aan deze stap.";
     const words = stepText.split(" ");
 
     return (
-       <main className="relative flex h-[calc(100vh-97px)] flex-col overflow-hidden bg-[#004B98] font-sans text-[#333333] selection:bg-[#0064AD]/20"> {/* -97px zodat er geen scroll is, want met header is het anders groter dan het scherm (100vh) */}
+        <main className="relative flex h-[calc(100vh-97px)] flex-col overflow-hidden bg-[#004B98] font-sans text-[#333333] selection:bg-[#0064AD]/20">
             <section className="relative w-full h-[30vh] bg-neutral-900 overflow-hidden">
-                {/* Sluitknop */}
                 <Button
                     asChild
                     variant="ghost"
@@ -219,9 +225,11 @@ export function RouteDetail() {
                     </Link>
                 </Button>
 
+                {/* React Key dwingt vernieuwing af bij stapwissel */}
                 <img
-                    src={(currentStep as any)?.imageUrl}
-                    alt={currentStep?.locationName}
+                    key={currentStep.id || activeStep} 
+                    src={currentStep.imageUrl}
+                    alt={currentStep.locationName}
                     className="h-full w-full object-cover transition-all duration-700 ease-in-out"
                 />
 
@@ -233,9 +241,7 @@ export function RouteDetail() {
                     <Button
                         type="button"
                         variant="ghost"
-                        onClick={() =>
-                            setActiveStep((prev) => Math.max(0, prev - 1))
-                        }
+                        onClick={() => setActiveStep((prev) => Math.max(0, prev - 1))}
                         disabled={activeStep === 0}
                         className="inline-flex items-center justify-center text-white/95 hover:text-white hover:bg-white/10 rounded-[2mm] text-sm font-semibold gap-1 lowercase disabled:opacity-40 disabled:pointer-events-none"
                     >
@@ -249,11 +255,7 @@ export function RouteDetail() {
                     <Button
                         type="button"
                         variant="ghost"
-                        onClick={() =>
-                            setActiveStep((prev) =>
-                                Math.min(orderedSteps.length - 1, prev + 1),
-                            )
-                        }
+                        onClick={() => setActiveStep((prev) => Math.min(orderedSteps.length - 1, prev + 1))}
                         disabled={activeStep >= orderedSteps.length - 1}
                         className="inline-flex items-center justify-center text-white/95 hover:text-white hover:bg-white/10 rounded-[2mm] text-sm font-semibold gap-1 lowercase disabled:opacity-40 disabled:pointer-events-none"
                     >
@@ -262,19 +264,16 @@ export function RouteDetail() {
                 </div>
             </section>
 
-            {/* ONDERSTE HELFT: Lyrics Sheet van de HUIDIGE stap */}
             <section className="relative flex h-[70vh] flex-col bg-gradient-to-b from-[#004B98] to-[#0064AD] pt-6 px-6 text-white shadow-[0_-15px_40px_rgba(0,0,0,0.3)] rounded-t-[32px] z-10 overflow-hidden">
-                {/* Sleep-indicator bar */}
                 <div className="mx-auto mb-4 h-1 w-12 rounded-full bg-white/25" />
 
-                {/* Info & TTS Control */}
                 <div className="mb-4 flex items-end justify-between border-b border-white/10 pb-4">
                     <div>
                         <span className="font-sans text-xs font-bold tracking-widest text-[#FFF265] uppercase">
                             stap {activeStep + 1} van {orderedSteps.length}
                         </span>
                         <h1 className="font-sans text-xl font-bold text-white lowercase mt-0.5">
-                            {currentStep?.locationName || "locatie"}
+                            {currentStep.locationName}
                         </h1>
                     </div>
 
@@ -291,22 +290,18 @@ export function RouteDetail() {
                     </Button>
                 </div>
 
-                {/* SCROLLBARE CONTAINER */}
-<div
-    ref={textScrollContainerRef}
-    className="flex-1 overflow-y-auto py-4 scrollbar-none select-none relative"
-    style={{
-        maskImage:
-            "linear-gradient(to bottom, white 85%, transparent 100%)",
-        WebkitMaskImage:
-            "linear-gradient(to bottom, white 85%, transparent 100%)",
-    }}
+                <div
+                    ref={textScrollContainerRef}
+                    className="flex-1 overflow-y-auto py-4 scrollbar-none select-none relative"
+                    style={{
+                        maskImage: "linear-gradient(to bottom, white 85%, transparent 100%)",
+                        WebkitMaskImage: "linear-gradient(to bottom, white 85%, transparent 100%)",
+                    }}
                 >
                     <div className="font-sans font-bold tracking-tight text-2xl md:text-3xl text-left lowercase transition-all duration-300">
                         <span className="flex flex-wrap gap-x-[0.23em] gap-y-2">
                             {words.map((word, wordIdx) => {
-                                const isWordSpeaking =
-                                    isPlaying && wordIdx === currentWordIndex;
+                                const isWordSpeaking = isPlaying && wordIdx === currentWordIndex;
                                 const dynamicStyle = isPlaying
                                     ? isWordSpeaking
                                         ? "opacity-100 text-[#FFFFFF] scale-100"
@@ -324,15 +319,13 @@ export function RouteDetail() {
                             })}
                         </span>
 
-                        {currentStep?.direction && (
+                        {currentStep.direction && (
                             <span className="block text-base font-normal font-sans text-white/80 mt-6 normal-case border-l-2 border-[#FFF265] pl-3">
                                 ➔ {currentStep.direction}
                             </span>
                         )}
                     </div>
                 </div>
-
-                {/* OUDE NAVIGATIE BALK IS HIER VERWIJDERD */}
             </section>
         </main>
     );

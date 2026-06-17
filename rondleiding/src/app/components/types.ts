@@ -15,3 +15,13 @@ export interface TourPoint {
   y: number; // positie op de kaart (percentage)
   slides: TourSlide[];
 }
+
+export interface Location {
+    id: string;
+    name: string;
+    description: string;
+    buildingId?: string;
+    floor?: string;
+    // ... andere velden
+    imageUrl?: string; // <-- ZORG ERVOOR DAT DIT HIER STAAT
+}
