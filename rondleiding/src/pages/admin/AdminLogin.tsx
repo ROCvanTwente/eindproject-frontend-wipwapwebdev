@@ -50,7 +50,7 @@ export function AdminLogin() {
     <main className="mx-auto flex min-h-[calc(100vh-73px)] w-full max-w-md items-center px-4 py-8">
       <Card className="w-full">
         <CardHeader>
-          <CardTitle className="lowercase">admin login</CardTitle>
+          <CardTitle>Admin login</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">

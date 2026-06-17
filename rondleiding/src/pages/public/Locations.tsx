@@ -31,10 +31,10 @@ export function LocationsPage() {
   );
 
   const filteredLocations = useMemo(() => {
-    const q = search.trim().toLowerCase();
+    const q = search.trim();
     return locations.filter((location) => {
       const matchesQuery =
-        !q || location.name.toLowerCase().includes(q) || location.description.toLowerCase().includes(q);
+        !q || location.name.includes(q) || location.description.includes(q);
       const matchesBuilding =
         buildingFilter === 'all' || location.buildingId === buildingFilter || location.buildingName === buildingFilter;
       const matchesFloor = floorFilter === 'all' || location.floor === floorFilter;
@@ -48,7 +48,7 @@ export function LocationsPage() {
         <div className="roc-content-wrap roc-band">
           <div>
             <p className="roc-kicker text-primary">locaties</p>
-            <h1 className="roc-title mt-3">zoek en filter locaties binnen de school</h1>
+            <h1 className="roc-title mt-3">Zoek en filter locaties binnen de school</h1>
             <p className="roc-copy mt-4">De filterstrook volgt de diagonale en strakke lay-out uit de huisstijl.</p>
           </div>
 
@@ -70,7 +70,7 @@ export function LocationsPage() {
                 onChange={(event) => setBuildingFilter(event.target.value)}
                 className="h-11 w-full rounded-[2mm] border border-border bg-background px-3 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
               >
-                <option value="all">alle gebouwen</option>
+                <option value="all">Alle gebouwen</option>
                 {buildings.map((building) => (
                   <option key={building.id} value={building.id}>
                     {building.name}
@@ -79,14 +79,14 @@ export function LocationsPage() {
               </select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="floor-filter">verdieping</Label>
+              <Label htmlFor="floor-filter">Verdieping</Label>
               <select
                 id="floor-filter"
                 value={floorFilter}
                 onChange={(event) => setFloorFilter(event.target.value)}
                 className="h-11 w-full rounded-[2mm] border border-border bg-background px-3 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
               >
-                <option value="all">alle verdiepingen</option>
+                <option value="all">Alle verdiepingen</option>
                 {floors.map((floor) => (
                   <option key={floor} value={floor}>
                     {floor}

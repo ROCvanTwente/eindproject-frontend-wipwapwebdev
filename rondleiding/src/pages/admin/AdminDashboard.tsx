@@ -66,7 +66,7 @@ export function AdminDashboard() {
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>
           <CardHeader>
-            <CardTitle className="lowercase">routes</CardTitle>
+            <CardTitle>routes</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-semibold text-primary">{stats.routes}</p>
@@ -74,7 +74,7 @@ export function AdminDashboard() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="lowercase">locaties</CardTitle>
+            <CardTitle>locaties</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-semibold text-primary">{stats.locations}</p>
@@ -82,7 +82,7 @@ export function AdminDashboard() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="lowercase">gebouwen</CardTitle>
+            <CardTitle>gebouwen</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-semibold text-primary">{stats.buildings}</p>
