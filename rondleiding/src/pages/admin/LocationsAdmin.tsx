@@ -1,40 +1,153 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState, DragEvent, ChangeEvent, useCallback } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../../app/components/ui/button';
-import { Input } from '../../app/components/ui/input';
 import { Label } from '../../app/components/ui/label';
 import { Textarea } from '../../app/components/ui/textarea';
+import { Input } from '../../app/components/ui/input';
 import { buildingService } from '../../services/buildingService';
 import { locationService } from '../../services/locationService';
 import type { Building, Location } from '../../types';
 
-const emptyForm = { name: '', description: '', imageUrl: '', floor: '', buildingId: '' };
+type LocationFormState = {
+  name: string;
+  description: string;
+  imageUrl: string; 
+  floor: string;
+  buildingId: string;
+};
+
+const emptyForm: LocationFormState = { name: '', description: '', imageUrl: '', floor: '', buildingId: '' };
+
+// HOOGWAARDIGE COMPRESSOR & VERKLEINER (Zonder extra npm packages)
+const compressAndResizeImage = (file: File, maxWidth = 1024, maxHeight = 1024, quality = 0.7): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target?.result as string;
+      
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        // Bereken nieuwe verhoudingen op basis van de max breedte/hoogte
+        if (width > height) {
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Canvas context kon niet worden aangemaakt.'));
+          return;
+        }
+
+        // Teken de afbeelding op het kleinere canvas
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // Exporteer naar een compacte JPEG Base64 string (kwaliteit 0.7 = 70%)
+        const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+        resolve(compressedBase64);
+      };
+      
+      img.onerror = (err) => reject(err);
+    };
+    reader.onerror = (err) => reject(err);
+  });
+};
 
 export function LocationsAdmin() {
   const [items, setItems] = useState<Location[]>([]);
   const [buildings, setBuildings] = useState<Building[]>([]);
-  const [form, setForm] = useState(emptyForm);
+  const [form, setForm] = useState<LocationFormState>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [isDraggingFile, setIsDraggingFile] = useState(false);
+  const [isConvertingImage, setIsConvertingImage] = useState(false);
 
-  const loadData = async () => {
-    const [locations, buildingList] = await Promise.all([locationService.getAll(), buildingService.getAll()]);
-    setItems(locations);
-    setBuildings(buildingList);
-  };
+  const loadData = useCallback(async () => {
+    try {
+      const [locations, buildingList] = await Promise.all([locationService.getAll(), buildingService.getAll()]);
+      setItems(locations);
+      setBuildings(buildingList);
+    } catch {
+      toast.error('Data inladen mislukt');
+    }
+  }, []);
 
   useEffect(() => {
-    loadData().catch(() => toast.error('Locaties laden mislukt'));
-  }, []);
+    loadData();
+  }, [loadData]);
 
   const buildingNameLookup = useMemo(() => {
     return new Map(buildings.map((building) => [building.id, building.name]));
   }, [buildings]);
 
+  const handleImageSelection = useCallback(async (selectedFile: File | null | undefined) => {
+    if (!selectedFile) return;
+
+    if (!selectedFile.type.startsWith('image/')) {
+      toast.error('Alleen afbeeldingen zijn toegestaan');
+      return;
+    }
+
+    setIsConvertingImage(true);
+
+    try {
+      // Hier wordt de afbeelding verkleind naar max 1024px breed/hoog en gecomprimeerd naar 70% kwaliteit
+      const compressedBase64 = await compressAndResizeImage(selectedFile, 1024, 1024, 0.7);
+
+      setForm((prev) => ({ ...prev, imageUrl: compressedBase64 }));
+      toast.success('Afbeelding succesvol verkleind en ingeladen');
+    } catch (error) {
+      console.error("[Conversie] Fout:", error);
+      toast.error('Fout bij het verwerken van de afbeelding');
+      setForm((prev) => ({ ...prev, imageUrl: '' }));
+    } finally {
+      setIsConvertingImage(false);
+    }
+  }, []);
+
+  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDraggingFile(true);
+  };
+
+  const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDraggingFile(false);
+  };
+
+  const handleDrop = async (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDraggingFile(false);
+    const file = e.dataTransfer.files?.[0];
+    await handleImageSelection(file);
+  };
+
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    await handleImageSelection(file);
+    e.target.value = ''; 
+  };
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     try {
-      const payload = {
+      const payload: Omit<Location, 'id' | 'buildingName'> = {
         name: form.name,
         description: form.description,
         imageUrl: form.imageUrl,
@@ -54,7 +167,7 @@ export function LocationsAdmin() {
       setEditingId(null);
       await loadData();
     } catch {
-      toast.error('Opslaan mislukt');
+      toast.error('Opslaan mislukt. Is de afbeelding te groot?');
     }
   };
 
@@ -99,14 +212,54 @@ export function LocationsAdmin() {
             required
           />
         </div>
+
         <div className="space-y-2">
-          <Label htmlFor="location-image">Afbeelding URL</Label>
-          <Input
-            id="location-image"
-            value={form.imageUrl}
-            onChange={(event) => setForm((prev) => ({ ...prev, imageUrl: event.target.value }))}
-          />
+          <Label htmlFor="location-image">Afbeelding (wordt automatisch verkleind)</Label>
+          <div
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`relative flex h-24 cursor-pointer flex-col items-center justify-center rounded-md border border-dashed text-center text-xs transition-colors ${
+              isDraggingFile ? 'border-primary bg-primary/10' : 'border-muted-foreground/30 hover:bg-muted/50'
+            }`}
+          >
+            <input
+              type="file"
+              id="location-image"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="absolute inset-0 cursor-pointer opacity-0"
+              disabled={isConvertingImage}
+            />
+            
+            {isConvertingImage ? (
+                <div className="p-4 text-muted-foreground animate-pulse">
+                    <p className="font-medium">Afbeelding comprimeren...</p>
+                </div>
+            ) : form.imageUrl ? (
+              <div className="flex items-center gap-3 p-2 w-full h-full relative">
+                <img src={form.imageUrl} alt="Preview" className="h-full w-16 rounded object-cover" />
+                <span className="truncate text-muted-foreground">Afbeelding klaar (Klik/sleep om te wijzigen)</span>
+                <button 
+                  type="button" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setForm(prev => ({...prev, imageUrl: ''}));
+                  }} 
+                  className='absolute top-1 right-1 p-1 bg-white/80 rounded-full hover:bg-white text-destructive font-bold z-10 size-5 flex items-center justify-center border text-sm'
+                >
+                    &times;
+                </button>
+              </div>
+            ) : (
+              <div className="p-4 text-muted-foreground">
+                <p className="font-medium">Klik om te zoeken</p>
+                <p>of sleep een afbeelding hierheen</p>
+              </div>
+            )}
+          </div>
         </div>
+
         <div className="space-y-2">
           <Label htmlFor="location-floor">Verdieping</Label>
           <Input
