@@ -113,10 +113,62 @@ export function RouteDetail() {
         };
     }, []);
 
+    const detectLanguage = (textToDetect: string): "en" | "nl" => {
+        const t = textToDetect.toLowerCase();
+
+        // Simple heuristiek voor NL/EN (goed genoeg voor korte step-descriptions)
+        const enSignals = [
+            // common short english words
+            " the ", " and ", " you ", " your ", " we ", " our ", " they ", " their ",
+            " is ", " are ", " of ", "to ", "from ", "with ", "in ", "on ", "for ", "at ", "as ",
+            // a few domain-ish words
+            "guide", "welcome", "entrance", "exit", "building", "museum",
+            "stairs", "floor", "level", "left", "right", "north", "south", "east", "west",
+        ];
+        const nlSignals = [
+            "de ", "en ", "je ", "jouw ", "wij ", "ons ", "zij ", "hun ",
+            "gids", "welkom", "ingang", "uitgang", "gebouw", "museum",
+            "trappen", "verdieping", "etage", "links", "rechts", "noord", "zuid", "oost", "west",
+        ];
+
+        let enScore = 0;
+        for (const s of enSignals) if (t.includes(s)) enScore++;
+
+        let nlScore = 0;
+        for (const s of nlSignals) if (t.includes(s)) nlScore++;
+
+        return enScore > nlScore ? "en" : "nl";
+    };
+
+    const getBestVoiceForLang = (lang: "en" | "nl", voices: SpeechSynthesisVoice[]) => {
+        const targetLang = lang === "en" ? "en" : "nl";
+
+        return (
+            voices.find((v) => v.lang?.toLowerCase() === (lang === "en" ? "en-us" : "nl-nl")) ||
+            voices.find((v) => v.lang?.toLowerCase().startsWith(targetLang)) ||
+            voices.find((v) => v.default) ||
+            voices[0] ||
+            null
+        );
+    };
+
     const startSpeech = (text: string) => {
         window.speechSynthesis.cancel();
+
+        const detected = detectLanguage(text);
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = "nl-NL";
+
+        const preferredLang = detected === "en" ? "en-US" : "nl-NL";
+        utterance.lang = preferredLang;
+
+        const availableVoices = window.speechSynthesis.getVoices?.() || [];
+        const selectedVoice = getBestVoiceForLang(detected, availableVoices);
+        if (selectedVoice) {
+            utterance.voice = selectedVoice;
+            // Zorg dat lang overeenkomt met gekozen voice
+            utterance.lang = selectedVoice.lang || preferredLang;
+        }
+
         utteranceRef.current = utterance;
 
         utterance.onstart = () => {
@@ -209,7 +261,7 @@ export function RouteDetail() {
     if (!route || orderedSteps.length === 0 || !currentStep) return null;
 
     const stepText = currentStep?.locationDescription || "geen beschrijving toegevoegd aan deze stap.";
-    const words = stepText.split(" ");
+    const words = stepText.split(/\s+/);
 
     return (
         <main className="relative flex h-[calc(100vh-97px)] flex-col overflow-hidden bg-[#004B98] font-sans text-[#333333] selection:bg-[#0064AD]/20">
@@ -243,12 +295,12 @@ export function RouteDetail() {
                         variant="ghost"
                         onClick={() => setActiveStep((prev) => Math.max(0, prev - 1))}
                         disabled={activeStep === 0}
-                        className="inline-flex items-center justify-center text-white/95 hover:text-white hover:bg-white/10 rounded-[2mm] text-sm font-semibold gap-1 lowercase disabled:opacity-40 disabled:pointer-events-none"
+                        className="inline-flex items-center justify-center text-white/95 hover:text-white hover:bg-white/10 rounded-[2mm] text-sm font-semibold gap-1 disabled:opacity-40 disabled:pointer-events-none"
                     >
                         <ChevronLeft className="size-4" /> vorige
                     </Button>
 
-                    <span className="text-xs text-white/95 font-sans truncate max-w-[140px] lowercase drop-shadow-md">
+                    <span className="text-xs text-white/95 font-sans truncate max-w-[140px] drop-shadow-md">
                         {route.name}
                     </span>
 
@@ -257,7 +309,7 @@ export function RouteDetail() {
                         variant="ghost"
                         onClick={() => setActiveStep((prev) => Math.min(orderedSteps.length - 1, prev + 1))}
                         disabled={activeStep >= orderedSteps.length - 1}
-                        className="inline-flex items-center justify-center text-white/95 hover:text-white hover:bg-white/10 rounded-[2mm] text-sm font-semibold gap-1 lowercase disabled:opacity-40 disabled:pointer-events-none"
+                        className="inline-flex items-center justify-center text-white/95 hover:text-white hover:bg-white/10 rounded-[2mm] text-sm font-semibold gap-1 disabled:opacity-40 disabled:pointer-events-none"
                     >
                         volgende <ChevronRight className="size-4" />
                     </Button>
@@ -269,10 +321,10 @@ export function RouteDetail() {
 
                 <div className="mb-4 flex items-end justify-between border-b border-white/10 pb-4">
                     <div>
-                        <span className="font-sans text-xs font-bold tracking-widest text-[#FFF265] uppercase">
+                    <span className="font-sans text-xs font-bold tracking-widest text-[#FFF265]">
                             stap {activeStep + 1} van {orderedSteps.length}
                         </span>
-                        <h1 className="font-sans text-xl font-bold text-white lowercase mt-0.5">
+                        <h1 className="font-sans text-xl font-bold text-white mt-0.5">
                             {currentStep.locationName}
                         </h1>
                     </div>
@@ -293,12 +345,8 @@ export function RouteDetail() {
                 <div
                     ref={textScrollContainerRef}
                     className="flex-1 overflow-y-auto py-4 scrollbar-none select-none relative"
-                    style={{
-                        maskImage: "linear-gradient(to bottom, white 85%, transparent 100%)",
-                        WebkitMaskImage: "linear-gradient(to bottom, white 85%, transparent 100%)",
-                    }}
                 >
-                    <div className="font-sans font-bold tracking-tight text-2xl md:text-3xl text-left lowercase transition-all duration-300">
+                    <div className="font-sans font-bold tracking-tight text-2xl md:text-3xl text-left transition-all duration-300">
                         <span className="flex flex-wrap gap-x-[0.23em] gap-y-2">
                             {words.map((word, wordIdx) => {
                                 const isWordSpeaking = isPlaying && wordIdx === currentWordIndex;
@@ -318,12 +366,6 @@ export function RouteDetail() {
                                 );
                             })}
                         </span>
-
-                        {currentStep.direction && (
-                            <span className="block text-base font-normal font-sans text-white/80 mt-6 normal-case border-l-2 border-[#FFF265] pl-3">
-                                ➔ {currentStep.direction}
-                            </span>
-                        )}
                     </div>
                 </div>
             </section>

@@ -17,13 +17,13 @@ export function LocationCard({ location }: LocationCardProps) {
         <span className="roc-diagonal-overlay roc-diagonal-overlay--teal" />
       </div>
       <CardHeader className="pb-4">
-        <CardTitle className="text-lg lowercase">{location.name}</CardTitle>
+        <CardTitle className="text-lg">{location.name}</CardTitle>
         <CardDescription>
           {location.buildingName || 'Onbekend gebouw'} {location.floor ? `• ${location.floor}` : ''}
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-0">
-        <p className="text-sm text-muted-foreground">{location.description}</p>
+        <p className="text-sm text-muted-foreground whitespace-pre-line">{location.description}</p>
       </CardContent>
     </Card>
   );

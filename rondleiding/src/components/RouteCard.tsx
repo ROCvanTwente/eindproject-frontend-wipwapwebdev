@@ -12,7 +12,7 @@ export function RouteCard({ route }: RouteCardProps) {
   return (
     <Card className="h-full">
       <CardHeader className="pb-4">
-        <CardTitle className="text-lg lowercase">{route.name}</CardTitle>
+        <CardTitle className="text-lg">{route.name}</CardTitle>
         <CardDescription>{route.description}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3 text-sm text-muted-foreground">

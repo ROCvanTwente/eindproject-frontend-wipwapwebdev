@@ -18,7 +18,7 @@ export function AdminNav() {
     <aside className="w-full border-r border-border/70 bg-white md:w-72">
       <div className="border-b border-border/70 px-4 py-5">
         <p className="roc-kicker text-muted-foreground">beheer</p>
-        <h2 className="roc-title mt-1 text-xl lowercase">dashboard</h2>
+        <h2 className="roc-title mt-1 text-xl">dashboard</h2>
       </div>
       <nav className="space-y-1 p-3">
         {links.map(({ to, label, icon: Icon }) => (
@@ -33,7 +33,7 @@ export function AdminNav() {
             }
           >
             <Icon className="size-4" />
-            <span>{label.toLowerCase()}</span>
+            <span>{label}</span>
           </NavLink>
         ))}
       </nav>

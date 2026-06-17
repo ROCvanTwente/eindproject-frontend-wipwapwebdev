@@ -21,8 +21,8 @@ export function RoutesPage() {
       <section className="roc-strip roc-strip--white">
         <div className="roc-content-wrap roc-band">
           <div>
-            <p className="roc-kicker text-primary">routes</p>
-            <h1 className="roc-title mt-3">kies een route door de school</h1>
+            <p className="roc-kicker text-primary">Routes</p>
+            <h1 className="roc-title mt-3">Kies een route door de school</h1>
             <p className="roc-copy mt-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi elementum risus ut odio suscipit pretium. Vivamus metus urna, hendrerit sed.</p>
           </div>
 
