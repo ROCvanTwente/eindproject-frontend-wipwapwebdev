@@ -62,3 +62,30 @@ export interface DashboardStats {
   locations: number;
   buildings: number;
 }
+
+export interface AnalyticsDailyMetric {
+  date: string;
+  visitors: number;
+  pageViews: number;
+  routeStarts: number;
+}
+
+export interface RouteStartMetric {
+  routeId?: number;
+  routeName: string;
+  starts: number;
+}
+
+export interface PathMetric {
+  path: string;
+  views: number;
+}
+
+export interface AnalyticsSummary {
+  totalVisitors: number;
+  totalPageViews: number;
+  totalRouteStarts: number;
+  dailyMetrics: AnalyticsDailyMetric[];
+  routeStarts: RouteStartMetric[];
+  popularPages: PathMetric[];
+}
