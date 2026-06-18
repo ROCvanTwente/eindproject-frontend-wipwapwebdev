@@ -342,7 +342,7 @@ export function LocationsAdmin() {
                     toast.success('Locatie verwijderd');
                     await loadData();
                   } catch {
-                    toast.error('Verwijderen mislukt');
+                    toast.error('Verwijderen mislukt check of de locatie nog in een route zit.');
                   }
                 }}
               >
