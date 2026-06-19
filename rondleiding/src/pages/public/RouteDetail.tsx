@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import { Link, useParams } from "react-router";
 import { ChevronLeft, ChevronRight, Pause, Play, X } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { Button } from "../../app/components/ui/button";
 import { locationService } from "../../services/locationService";
 import { analyticsService } from "../../services/analyticsService";
@@ -8,6 +9,7 @@ import { routeService } from "../../services/routeService";
 import type { GuideRoute, Location } from "../../types";
 
 const FALLBACK_IMAGE_URL = "https://images.unsplash.com/photo-1582407947304-fd86f028f716?q=80&w=1000&auto=format&fit=crop";
+const STEP_TRANSITION = { duration: 0.42, ease: [0.22, 1, 0.36, 1] as const };
 
 interface EnrichedStep {
     id: string; 
@@ -26,6 +28,7 @@ export function RouteDetail() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [activeStep, setActiveStep] = useState(0);
+    const [stepDirection, setStepDirection] = useState(1);
 
     const [isPlaying, setIsPlaying] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
@@ -245,6 +248,14 @@ export function RouteDetail() {
         }
     };
 
+    const goToStep = (nextStep: number) => {
+        const boundedStep = Math.max(0, Math.min(orderedSteps.length - 1, nextStep));
+        if (boundedStep === activeStep) return;
+
+        setStepDirection(boundedStep > activeStep ? 1 : -1);
+        setActiveStep(boundedStep);
+    };
+
     if (loading)
         return (
             <div className="flex h-screen items-center justify-center bg-white font-sans text-[#333333]">
@@ -277,13 +288,19 @@ export function RouteDetail() {
                     </Link>
                 </Button>
 
-                {/* React Key dwingt vernieuwing af bij stapwissel */}
-                <img
-                    key={currentStep.id || activeStep} 
-                    src={currentStep.imageUrl}
-                    alt={currentStep.locationName}
-                    className="h-full w-full object-cover transition-all duration-700 ease-in-out"
-                />
+                <AnimatePresence initial={false} custom={stepDirection}>
+                    <motion.img
+                        key={currentStep.id || activeStep}
+                        src={currentStep.imageUrl}
+                        alt={currentStep.locationName}
+                        custom={stepDirection}
+                        initial={{ opacity: 0, x: stepDirection * 36, scale: 1.04 }}
+                        animate={{ opacity: 1, x: 0, scale: 1 }}
+                        exit={{ opacity: 0, x: stepDirection * -28, scale: 0.985 }}
+                        transition={STEP_TRANSITION}
+                        className="absolute inset-0 h-full w-full object-cover"
+                    />
+                </AnimatePresence>
 
                 <div className="absolute inset-0 bg-gradient-to-t from-[#004B98] via-transparent to-black/20 pointer-events-none" />
                 <span className="roc-diagonal-overlay" />
@@ -293,7 +310,7 @@ export function RouteDetail() {
                     <Button
                         type="button"
                         variant="ghost"
-                        onClick={() => setActiveStep((prev) => Math.max(0, prev - 1))}
+                        onClick={() => goToStep(activeStep - 1)}
                         disabled={activeStep === 0}
                         className="inline-flex items-center justify-center text-white/95 hover:text-white hover:bg-white/10 rounded-[2mm] text-sm font-semibold gap-1 disabled:opacity-40 disabled:pointer-events-none"
                     >
@@ -307,7 +324,7 @@ export function RouteDetail() {
                     <Button
                         type="button"
                         variant="ghost"
-                        onClick={() => setActiveStep((prev) => Math.min(orderedSteps.length - 1, prev + 1))}
+                        onClick={() => goToStep(activeStep + 1)}
                         disabled={activeStep >= orderedSteps.length - 1}
                         className="inline-flex items-center justify-center text-white/95 hover:text-white hover:bg-white/10 rounded-[2mm] text-sm font-semibold gap-1 disabled:opacity-40 disabled:pointer-events-none"
                     >
@@ -320,14 +337,23 @@ export function RouteDetail() {
                 <div className="mx-auto mb-4 h-1 w-12 rounded-full bg-white/25" />
 
                 <div className="mb-4 flex items-end justify-between border-b border-white/10 pb-4">
-                    <div>
-                    <span className="font-sans text-xs font-bold tracking-widest text-[#FFF265]">
-                            stap {activeStep + 1} van {orderedSteps.length}
-                        </span>
-                        <h1 className="font-sans text-xl font-bold text-white mt-0.5">
-                            {currentStep.locationName}
-                        </h1>
-                    </div>
+                    <AnimatePresence mode="wait" initial={false} custom={stepDirection}>
+                        <motion.div
+                            key={`heading-${currentStep.id || activeStep}`}
+                            custom={stepDirection}
+                            initial={{ opacity: 0, x: stepDirection * 24 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: stepDirection * -18 }}
+                            transition={STEP_TRANSITION}
+                        >
+                            <span className="font-sans text-xs font-bold tracking-widest text-[#FFF265]">
+                                stap {activeStep + 1} van {orderedSteps.length}
+                            </span>
+                            <h1 className="font-sans text-xl font-bold text-white mt-0.5">
+                                {currentStep.locationName}
+                            </h1>
+                        </motion.div>
+                    </AnimatePresence>
 
                     <Button
                         type="button"
@@ -346,27 +372,38 @@ export function RouteDetail() {
                     ref={textScrollContainerRef}
                     className="flex-1 overflow-y-auto py-4 scrollbar-none select-none relative"
                 >
-                    <div className="font-sans font-bold tracking-tight text-2xl md:text-3xl text-left transition-all duration-300">
-                        <span className="flex flex-wrap gap-x-[0.23em] gap-y-2">
-                            {words.map((word, wordIdx) => {
-                                const isWordSpeaking = isPlaying && wordIdx === currentWordIndex;
-                                const dynamicStyle = isPlaying
-                                    ? isWordSpeaking
-                                        ? "opacity-100 text-[#FFFFFF] scale-100"
-                                        : "opacity-25 text-white/50"
-                                    : "text-white opacity-100";
+                    <AnimatePresence mode="wait" initial={false} custom={stepDirection}>
+                        <motion.div
+                            key={`text-${currentStep.id || activeStep}`}
+                            custom={stepDirection}
+                            initial={{ opacity: 0, y: 18, x: stepDirection * 18 }}
+                            animate={{ opacity: 1, y: 0, x: 0 }}
+                            exit={{ opacity: 0, y: -10, x: stepDirection * -12 }}
+                            transition={STEP_TRANSITION}
+                            className="font-sans font-bold tracking-tight text-2xl md:text-3xl text-left"
+                        >
+                            <span className="flex flex-wrap gap-x-[0.23em] gap-y-2">
+                                {words.map((word, wordIdx) => {
+                                    const isWordSpeaking = isPlaying && wordIdx === currentWordIndex;
+                                    const dynamicStyle = isPlaying
+                                        ? isWordSpeaking
+                                            ? "opacity-100 text-[#FFFFFF] scale-100"
+                                            : "opacity-25 text-white/50"
+                                        : "text-white opacity-100";
 
-                                return (
-                                    <span
-                                        key={wordIdx}
-                                        className={`tts-word inline-block transition-all duration-150 origin-left ${dynamicStyle}`}
-                                    >
-                                        {word}
-                                    </span>
-                                );
-                            })}
-                        </span>
-                    </div>
+                                    return (
+                                        <span
+                                            key={wordIdx}
+                                            className={`tts-word inline-block transition-all duration-150 origin-left ${dynamicStyle}`}
+                                        >
+                                            {word}
+                                        </span>
+                                    );
+                                })}
+                            </span>
+
+                        </motion.div>
+                    </AnimatePresence>
                 </div>
             </section>
         </main>
