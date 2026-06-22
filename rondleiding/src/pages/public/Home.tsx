@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { ArrowRight, Building2, Compass, MapPinned } from "lucide-react";
 import { Button } from "../../app/components/ui/button";
+import gieterijBackground from "./img/gieterij1_logo-DR102645.jpg";
 
 export function Home() {
     return (
@@ -24,7 +25,6 @@ export function Home() {
                                 size="lg"
                                 variant="secondary"
                                 className="tracking-[0.08em]"
-
                             >
                                 <Link to="/routes">
                                     bekijk routes{" "}
@@ -36,7 +36,6 @@ export function Home() {
                                 size="lg"
                                 variant="outline"
                                 className="border-white/30 bg-transparent text-white hover:bg-white/10 tracking-[0.08em]"
-
                             >
                                 <Link to="/locations">alle locaties</Link>
                             </Button>
@@ -50,7 +49,7 @@ export function Home() {
                     <div
                         className="roc-panel p-6 md:p-8"
                         style={{
-                            backgroundImage: `url('/src/img/gieterij1_logo-DR102645.jpg')`,
+                            backgroundImage: `url(${gieterijBackground})`,
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                         }}
@@ -99,7 +98,6 @@ export function Home() {
                                 size="lg"
                                 variant="outline"
                                 className="border-white/30 bg-white text-foreground tracking-[0.08em]"
-
                             >
                                 <Link to="/locations">
                                     locaties <Building2 className="size-4" />
@@ -110,7 +108,6 @@ export function Home() {
                                 size="lg"
                                 variant="ghost"
                                 className="text-white shadow-sm bg-primary hover:bg-secondary/12 tracking-[0.08em]"
-
                             >
                                 <Link to="/admin/login">beheer</Link>
                             </Button>
