@@ -147,12 +147,12 @@ export function LocationsAdmin() {
     event.preventDefault();
 
     try {
-      const payload: Omit<Location, 'id' | 'buildingName'> = {
-        name: form.name,
-        description: form.description,
-        imageUrl: form.imageUrl,
-        floor: form.floor,
-        buildingId: form.buildingId || undefined,
+      const payload = {
+        name: form.name.trim(),
+        description: form.description.trim(),
+        imageUrl: form.imageUrl.trim() || undefined,
+        floor: Number(form.floor || 0),
+        buildingId: Number(form.buildingId),
       };
 
       if (editingId) {
@@ -264,6 +264,7 @@ export function LocationsAdmin() {
           <Label htmlFor="location-floor">Verdieping</Label>
           <Input
             id="location-floor"
+            type="number"
             value={form.floor}
             onChange={(event) => setForm((prev) => ({ ...prev, floor: event.target.value }))}
           />
@@ -275,6 +276,7 @@ export function LocationsAdmin() {
             value={form.buildingId}
             onChange={(event) => setForm((prev) => ({ ...prev, buildingId: event.target.value }))}
             className="h-9 w-full rounded-md border bg-background px-3 text-sm"
+            required
           >
             <option value="">Kies gebouw</option>
             {buildings.map((building) => (
@@ -340,7 +342,7 @@ export function LocationsAdmin() {
                     toast.success('Locatie verwijderd');
                     await loadData();
                   } catch {
-                    toast.error('Verwijderen mislukt');
+                    toast.error('Verwijderen mislukt check of de locatie nog in een route zit.');
                   }
                 }}
               >

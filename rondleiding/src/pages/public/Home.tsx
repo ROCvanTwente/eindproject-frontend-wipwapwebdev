@@ -10,7 +10,7 @@ export function Home() {
                     <div className="roc-panel roc-panel--dark p-6 md:p-8 lg:p-10">
                         <p className="roc-kicker">roc van twente</p>
                         <h1 className="roc-title mt-4 max-w-xl text-white">
-                            ontdek je route door het gebouw
+                            Ontdek je route door het gebouw
                         </h1>
                         <p className="roc-copy roc-copy--on-dark mt-5 max-w-2xl text-base md:text-lg">
                             Lorem ipsum dolor sit amet, consectetur adipiscing
@@ -23,7 +23,8 @@ export function Home() {
                                 asChild
                                 size="lg"
                                 variant="secondary"
-                                className="uppercase tracking-[0.08em]"
+                                className="tracking-[0.08em]"
+
                             >
                                 <Link to="/routes">
                                     bekijk routes{" "}
@@ -34,7 +35,8 @@ export function Home() {
                                 asChild
                                 size="lg"
                                 variant="outline"
-                                className="border-white/30 bg-transparent text-white hover:bg-white/10 uppercase tracking-[0.08em]"
+                                className="border-white/30 bg-transparent text-white hover:bg-white/10 tracking-[0.08em]"
+
                             >
                                 <Link to="/locations">alle locaties</Link>
                             </Button>
@@ -61,13 +63,13 @@ export function Home() {
                                 <MapPinned className="size-7 text-primary" />
                             </div>
                             <div className="mt-auto space-y-4">
-                                <div className="rounded-[2mm] bg-white p-4 shadow-sm">
+                                <div className="bg-white py-3 px-4 border-radius9999 shadow-sm">
                                     <p className="roc-kicker text-primary">
                                         Placeholder
                                     </p>
                                 </div>
-                                <div className="rounded-[2mm] bg-primary p-4 text-white shadow-sm">
-                                    <p className="text-sm font-semibold uppercase tracking-[0.12em]">
+                                <div className="bg-primary py-3 px-4 border-radius9999 text-white shadow-sm">
+                                    <p className="text-sm font-semibold tracking-[0.12em]">
                                         Placeholder
                                     </p>
                                 </div>
@@ -96,7 +98,8 @@ export function Home() {
                                 asChild
                                 size="lg"
                                 variant="outline"
-                                className="border-white/30 bg-white text-foreground uppercase tracking-[0.08em]"
+                                className="border-white/30 bg-white text-foreground tracking-[0.08em]"
+
                             >
                                 <Link to="/locations">
                                     locaties <Building2 className="size-4" />
@@ -106,7 +109,8 @@ export function Home() {
                                 asChild
                                 size="lg"
                                 variant="ghost"
-                                className="text-white shadow-sm bg-primary hover:bg-secondary/12 uppercase tracking-[0.08em]"
+                                className="text-white shadow-sm bg-primary hover:bg-secondary/12 tracking-[0.08em]"
+
                             >
                                 <Link to="/admin/login">beheer</Link>
                             </Button>
@@ -116,7 +120,7 @@ export function Home() {
                     <div className="roc-panel p-6 md:p-8">
                         <Compass className="size-8 text-primary" />
                         <h3 className="roc-title mt-4">
-                            heldere routes, duidelijke labels
+                            Lorem Ipsum dolor sit amet
                         </h3>
                         <p className="roc-copy mt-3 text-sm leading-6">
                             Lorem ipsum dolor sit amet, consectetur adipiscing

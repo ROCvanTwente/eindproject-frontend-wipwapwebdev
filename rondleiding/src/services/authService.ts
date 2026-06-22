@@ -13,6 +13,12 @@ interface LoginResponseShape {
   };
 }
 
+interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
 function tokenFromPayload(data: LoginResponseShape): string | null {
   return data.token ?? data.accessToken ?? null;
 }
@@ -50,6 +56,10 @@ export const authService = {
   logout() {
     localStorage.removeItem(TOKEN_STORAGE_KEY);
     localStorage.removeItem(REFRESH_STORAGE_KEY);
+  },
+
+  async changePassword(payload: ChangePasswordPayload) {
+    await api.post('/api/auth/change-password', payload);
   },
 
   getToken() {

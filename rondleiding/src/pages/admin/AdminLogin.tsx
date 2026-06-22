@@ -50,11 +50,11 @@ export function AdminLogin() {
     <main className="mx-auto flex min-h-[calc(100vh-73px)] w-full max-w-md items-center px-4 py-8">
       <Card className="w-full">
         <CardHeader>
-          <CardTitle className="lowercase">admin login</CardTitle>
+          <CardTitle>Admin login</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error ? <p className="rounded-[2mm] bg-destructive/10 p-2 text-sm text-destructive">{error}</p> : null}
+            {error ? <p className="bg-destructive/10 p-2 text-sm text-destructive">{error}</p> : null}
             <div className="space-y-2">
               <Label htmlFor="email">E-mail</Label>
               <Input

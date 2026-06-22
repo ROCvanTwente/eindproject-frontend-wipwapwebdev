@@ -46,7 +46,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-12">
       <Card className="w-full max-w-md border-gray-200/80 bg-white/95 shadow-xl">
           <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-semibold">Inloggen</CardTitle>
+          <CardTitle className="text-2xl border-radius9999 font-semibold">Inloggen</CardTitle>
           <CardDescription>
             Log in met je ROC-account om toegang te krijgen tot het beheerpaneel.
           </CardDescription>
