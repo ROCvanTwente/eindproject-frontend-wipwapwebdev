@@ -10,7 +10,7 @@ export function Navigation() {
     <header className="sticky top-0 z-40 border-b border-border/70 bg-white/90 backdrop-blur-md">
       <div className="roc-content-wrap flex items-center justify-between gap-4 py-4">
         <Link to="/">
-          <img src="..\src\img\rvt-logo_cmyk.png" alt="ROC van Twente" className="h-16 w-auto" />
+          <img src="..\img\rvt-logo_cmyk.png" alt="ROC van Twente" className="h-16 w-auto" />
         </Link>
         <nav className="flex items-center gap-4 md:gap-6">
           <NavLink to="/" className={navClass} end>
