@@ -57,9 +57,9 @@ export function Home() {
                                     </Link>
                                 </div>
                                 <div className="bg-primary py-3 px-4 border-radius9999 text-white shadow-sm">
-                                    <link href="/routes" className="roc-kicker text-primary">
+                                    <Link to="/routes" className="roc-kicker text-white">
                                         routes
-                                    </link>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
