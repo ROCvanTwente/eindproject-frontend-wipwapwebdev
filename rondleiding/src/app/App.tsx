@@ -5,6 +5,7 @@ import { AnalyticsTracker } from '../components/AnalyticsTracker';
 import { ProtectedRoute } from '../components/ProtectedRoute';
 import { AuthProvider } from '../context/AuthContext';
 import { AdminDashboard } from '../pages/admin/AdminDashboard';
+import { AdminActivate } from '../pages/admin/AdminActivate';
 import { AdminLayout } from '../pages/admin/AdminLayout';
 import { AdminLogin } from '../pages/admin/AdminLogin';
 import { BuildingsAdmin } from '../pages/admin/BuildingsAdmin';
@@ -32,6 +33,7 @@ export default function App() {
             <Route path="/locations" element={<LocationsPage />} />
 
             <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/activate" element={<AdminActivate />} />
             <Route path="/reset-password" element={<ResetPassword />} />
 
             <Route element={<ProtectedRoute />}>
