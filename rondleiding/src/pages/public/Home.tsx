@@ -103,14 +103,6 @@ export function Home() {
                                     locaties <Building2 className="size-4" />
                                 </Link>
                             </Button>
-                            <Button
-                                asChild
-                                size="lg"
-                                variant="ghost"
-                                className="text-white shadow-sm bg-primary hover:bg-secondary/12 tracking-[0.08em]"
-                            >
-                                <Link to="/admin/login">beheer</Link>
-                            </Button>
                         </div>
                     </div>
 
