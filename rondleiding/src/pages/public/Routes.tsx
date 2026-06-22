@@ -31,11 +31,6 @@ export function RoutesPage() {
                         <h1 className="roc-title mt-3">
                             Kies een route door de school
                         </h1>
-                        <p className="roc-copy mt-4">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. Morbi elementum risus ut odio suscipit
-                            pretium. Vivamus metus urna, hendrerit sed.
-                        </p>
                     </div>
 
                     {loading ? <p>routes laden...</p> : null}

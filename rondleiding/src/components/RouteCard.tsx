@@ -20,7 +20,7 @@ export function RouteCard({ route }: RouteCardProps) {
           <Clock3 className="size-4" />
           {route.estimatedTimeMinutes} minuten
         </p>
-        <p>Moeilijkheid: {route.difficulty}</p>
+        <p>lengte: {route.difficulty}</p>
       </CardContent>
       <CardFooter className="pt-0">
         <Button asChild className="w-full uppercase tracking-[0.08em]">
