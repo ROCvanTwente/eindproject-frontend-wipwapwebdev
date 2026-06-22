@@ -7,7 +7,7 @@ interface LocationCardProps {
 
 export function LocationCard({ location }: LocationCardProps) {
   return (
-    <Card className="overflow-hidden">
+    <Card className="z-index-10 overflow-hidden">
       <div className="roc-wide-image">
         {location.imageUrl ? (
           <img src={location.imageUrl} alt={location.name} className="size-full object-cover" loading="lazy" />

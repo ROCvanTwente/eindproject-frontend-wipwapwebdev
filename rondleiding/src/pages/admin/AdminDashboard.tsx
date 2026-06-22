@@ -97,7 +97,7 @@ export function AdminDashboard() {
         <CardContent className="space-y-4">
           <p>Genereer een QR-code voor de basis-URL van de site:</p>
           <div className="flex flex-wrap gap-2">
-            <Button onClick={handleGenerateQrCode} disabled={qrLoading}>
+            <Button className="px-4" onClick={handleGenerateQrCode} disabled={qrLoading}>
               {qrLoading ? 'Genereren...' : 'Genereer QR-code'}
             </Button>
             <Button
