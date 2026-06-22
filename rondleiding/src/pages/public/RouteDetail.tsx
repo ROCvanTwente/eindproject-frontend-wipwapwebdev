@@ -8,11 +8,12 @@ import { analyticsService } from "../../services/analyticsService";
 import { routeService } from "../../services/routeService";
 import type { GuideRoute, Location } from "../../types";
 
-const FALLBACK_IMAGE_URL = "https://images.unsplash.com/photo-1582407947304-fd86f028f716?q=80&w=1000&auto=format&fit=crop";
+const FALLBACK_IMAGE_URL =
+    "https://images.unsplash.com/photo-1582407947304-fd86f028f716?q=80&w=1000&auto=format&fit=crop";
 const STEP_TRANSITION = { duration: 0.42, ease: [0.22, 1, 0.36, 1] as const };
 
 interface EnrichedStep {
-    id: string; 
+    id: string;
     locationId: string;
     order: number;
     locationName: string;
@@ -49,37 +50,50 @@ export function RouteDetail() {
             try {
                 const [rawRoute, allLocations] = await Promise.all([
                     routeService.getById(routeId),
-                    locationService.getAll()
+                    locationService.getAll(),
                 ]);
 
                 const locationMap = new Map<string, Location>(
-                    allLocations.map((loc) => [loc.id, loc])
+                    allLocations.map((loc) => [loc.id, loc]),
                 );
 
                 // Mappen en verrijken
-                const enrichedLocations = (rawRoute.locations || []).map((step: any, index: number) => {
-                    const linkedLocation = locationMap.get(step.locationId);
+                const enrichedLocations = (rawRoute.locations || []).map(
+                    (step: any, index: number) => {
+                        const linkedLocation = locationMap.get(step.locationId);
 
-                    // Precedentie bepalen
-                    const finalImageUrl = step.imageUrl || linkedLocation?.imageUrl || FALLBACK_IMAGE_URL;
+                        // Precedentie bepalen
+                        const finalImageUrl =
+                            step.imageUrl ||
+                            linkedLocation?.imageUrl ||
+                            FALLBACK_IMAGE_URL;
 
-                    return {
-                        ...step,
-                        locationName: step.locationName || linkedLocation?.name || `Stap ${index + 1}`,
-                        locationDescription: step.locationDescription || linkedLocation?.description || "",
-                        imageUrl: finalImageUrl,
-                    };
-                });
+                        return {
+                            ...step,
+                            locationName:
+                                step.locationName ||
+                                linkedLocation?.name ||
+                                `Stap ${index + 1}`,
+                            locationDescription:
+                                step.locationDescription ||
+                                linkedLocation?.description ||
+                                "",
+                            imageUrl: finalImageUrl,
+                        };
+                    },
+                );
 
                 const enrichedRoute = {
                     ...rawRoute,
-                    locations: enrichedLocations
+                    locations: enrichedLocations,
                 } as unknown as GuideRoute;
 
                 setRoute(enrichedRoute);
             } catch (err) {
                 console.error("CRASH TIJDENS DATA LADEN:", err);
-                setError(err instanceof Error ? err.message : "Route laden mislukt");
+                setError(
+                    err instanceof Error ? err.message : "Route laden mislukt",
+                );
             } finally {
                 setLoading(false);
             }
@@ -95,10 +109,11 @@ export function RouteDetail() {
             .slice()
             .sort((a, b) => a.order - b.order);
     }, [route]);
-    
+
     // Huidige stap bepalen
     const currentStep = useMemo(() => {
-        if (orderedSteps.length === 0 || activeStep >= orderedSteps.length) return null;
+        if (orderedSteps.length === 0 || activeStep >= orderedSteps.length)
+            return null;
         return orderedSteps[activeStep];
     }, [orderedSteps, activeStep]);
 
@@ -119,43 +134,86 @@ export function RouteDetail() {
     const detectLanguage = (textToDetect: string): "en" | "nl" => {
         const t = textToDetect.toLowerCase();
 
-        // Heuristiek NL/EN: standaard NL, alleen Engels als er duidelijk Engelstalige signalen zijn.
-        // (We vermijden té generieke woorden zodat NL niet per ongeluk Engels wordt.)
-        const enSignals = [
-            " discover ",
-            " magic ", "magic line",
-            " line ",
-            " the ", " you ", " your ", " and ", " we ", " our ", " they ", " their ",
-            " entrance", "exit",
-            " museum", "building",
-            " stairs", "floor", "level",
-            " left", "right", "north", "south", "east", "west",
-            " warmer", "warm", "heat",
+        // Woordenlijsten (zonder spaties eromheen, dat regelt de \b in de regex)
+        const enWords = [
+            "discover",
+            "magic",
+            "the",
+            "you",
+            "your",
+            "and",
+            "we",
+            "our",
+            "they",
+            "entrance",
+            "exit",
+            "museum",
+            "building",
+            "stairs",
+            "floor",
+            "level",
+            "left",
+            "right",
+            "warm",
+            "heat",
         ];
 
-        const nlSignals = [
-            "de ", "en ", "je ", "jouw ", "wij ", "ons ", "zij ", "hun ",
-            "gids", "welkom", "ingang", "uitgang", "gebouw", "museum",
-            "trappen", "verdieping", "etage", "links", "rechts", "noord", "zuid", "oost", "west",
+        const nlWords = [
+            "de",
+            "het",
+            "een",
+            "en",
+            "je",
+            "jouw",
+            "wij",
+            "ons",
+            "gids",
+            "welkom",
+            "ingang",
+            "uitgang",
+            "gebouw",
+            "museum",
+            "trappen",
+            "verdieping",
+            "links",
+            "rechts",
+            "warmte",
+            "gietproces",
         ];
 
-        // tel alleen Engels; bij twijfel NL
         let enScore = 0;
-        for (const s of enSignals) if (t.includes(s)) enScore++;
+        let nlScore = 0;
 
-        // optioneel: NL-signalen kunnen in de toekomst toegevoegd worden; voor nu default NL
-        void nlSignals;
+        // Tel hele woorden voor Engels
+        for (const word of enWords) {
+            const regex = new RegExp(`\\b${word}\\b`, "g");
+            const matches = t.match(regex);
+            if (matches) enScore += matches.length;
+        }
 
-        // Engels is alleen waar als er minstens 2 duidelijke signalen gevonden worden
-        return enScore >= 2 ? "en" : "nl";
+        // Tel hele woorden voor Nederlands
+        for (const word of nlWords) {
+            const regex = new RegExp(`\\b${word}\\b`, "g");
+            const matches = t.match(regex);
+            if (matches) nlScore += matches.length;
+        }
 
+        // Alleen Engels als de Engelse score écht hoger is dan de Nederlandse
+        return enScore > nlScore ? "en" : "nl";
     };
 
-    const getBestVoiceForLang = (lang: "en" | "nl", voices: SpeechSynthesisVoice[]) => {
+    const getBestVoiceForLang = (
+        lang: "en" | "nl",
+        voices: SpeechSynthesisVoice[],
+    ) => {
         const targetLang = lang === "en" ? "en" : "nl";
 
         return (
-            voices.find((v) => v.lang?.toLowerCase() === (lang === "en" ? "en-us" : "nl-nl")) ||
+            voices.find(
+                (v) =>
+                    v.lang?.toLowerCase() ===
+                    (lang === "en" ? "en-us" : "nl-nl"),
+            ) ||
             voices.find((v) => v.lang?.toLowerCase().startsWith(targetLang)) ||
             voices.find((v) => v.default) ||
             voices[0] ||
@@ -191,16 +249,24 @@ export function RouteDetail() {
             if (event.name === "word") {
                 const textUpToBoundary = text.substring(0, event.charIndex);
                 const wordsUpToBoundary = textUpToBoundary.trim().split(/\s+/);
-                const wordCount = textUpToBoundary.trim() === "" ? 0 : wordsUpToBoundary.length;
+                const wordCount =
+                    textUpToBoundary.trim() === ""
+                        ? 0
+                        : wordsUpToBoundary.length;
                 setCurrentWordIndex(wordCount);
 
                 const container = textScrollContainerRef.current;
                 if (container) {
-                    const wordsElements = container.getElementsByClassName("tts-word");
-                    const activeWordElement = wordsElements[wordCount] as HTMLElement;
+                    const wordsElements =
+                        container.getElementsByClassName("tts-word");
+                    const activeWordElement = wordsElements[
+                        wordCount
+                    ] as HTMLElement;
                     if (activeWordElement) {
                         container.scrollTo({
-                            top: activeWordElement.offsetTop - container.clientHeight / 2,
+                            top:
+                                activeWordElement.offsetTop -
+                                container.clientHeight / 2,
                             behavior: "smooth",
                         });
                     }
@@ -257,7 +323,10 @@ export function RouteDetail() {
     };
 
     const goToStep = (nextStep: number) => {
-        const boundedStep = Math.max(0, Math.min(orderedSteps.length - 1, nextStep));
+        const boundedStep = Math.max(
+            0,
+            Math.min(orderedSteps.length - 1, nextStep),
+        );
         if (boundedStep === activeStep) return;
 
         setStepDirection(boundedStep > activeStep ? 1 : -1);
@@ -276,10 +345,12 @@ export function RouteDetail() {
                 {error}
             </div>
         );
-        
+
     if (!route || orderedSteps.length === 0 || !currentStep) return null;
 
-    const stepText = currentStep?.locationDescription || "geen beschrijving toegevoegd aan deze stap.";
+    const stepText =
+        currentStep?.locationDescription ||
+        "geen beschrijving toegevoegd aan deze stap.";
     const words = stepText.split(/\s+/);
 
     return (
@@ -302,9 +373,17 @@ export function RouteDetail() {
                         src={currentStep.imageUrl}
                         alt={currentStep.locationName}
                         custom={stepDirection}
-                        initial={{ opacity: 0, x: stepDirection * 36, scale: 1.04 }}
+                        initial={{
+                            opacity: 0,
+                            x: stepDirection * 36,
+                            scale: 1.04,
+                        }}
                         animate={{ opacity: 1, x: 0, scale: 1 }}
-                        exit={{ opacity: 0, x: stepDirection * -28, scale: 0.985 }}
+                        exit={{
+                            opacity: 0,
+                            x: stepDirection * -28,
+                            scale: 0.985,
+                        }}
                         transition={STEP_TRANSITION}
                         className="absolute inset-0 h-full w-full object-cover"
                     />
@@ -345,7 +424,11 @@ export function RouteDetail() {
                 <div className="mx-auto mb-4 h-1 w-12 rounded-full bg-white/25" />
 
                 <div className="mb-4 flex items-end justify-between border-b border-white/10 pb-4">
-                    <AnimatePresence mode="wait" initial={false} custom={stepDirection}>
+                    <AnimatePresence
+                        mode="wait"
+                        initial={false}
+                        custom={stepDirection}
+                    >
                         <motion.div
                             key={`heading-${currentStep.id || activeStep}`}
                             custom={stepDirection}
@@ -380,19 +463,33 @@ export function RouteDetail() {
                     ref={textScrollContainerRef}
                     className="flex-1 overflow-y-auto py-4 scrollbar-none select-none relative"
                 >
-                    <AnimatePresence mode="wait" initial={false} custom={stepDirection}>
+                    <AnimatePresence
+                        mode="wait"
+                        initial={false}
+                        custom={stepDirection}
+                    >
                         <motion.div
                             key={`text-${currentStep.id || activeStep}`}
                             custom={stepDirection}
-                            initial={{ opacity: 0, y: 18, x: stepDirection * 18 }}
+                            initial={{
+                                opacity: 0,
+                                y: 18,
+                                x: stepDirection * 18,
+                            }}
                             animate={{ opacity: 1, y: 0, x: 0 }}
-                            exit={{ opacity: 0, y: -10, x: stepDirection * -12 }}
+                            exit={{
+                                opacity: 0,
+                                y: -10,
+                                x: stepDirection * -12,
+                            }}
                             transition={STEP_TRANSITION}
                             className="font-sans font-bold tracking-tight text-2xl md:text-3xl text-left"
                         >
                             <span className="flex flex-wrap gap-x-[0.23em] gap-y-2">
                                 {words.map((word, wordIdx) => {
-                                    const isWordSpeaking = isPlaying && wordIdx === currentWordIndex;
+                                    const isWordSpeaking =
+                                        isPlaying &&
+                                        wordIdx === currentWordIndex;
                                     const dynamicStyle = isPlaying
                                         ? isWordSpeaking
                                             ? "opacity-100 text-[#FFFFFF] scale-100"
@@ -409,7 +506,6 @@ export function RouteDetail() {
                                     );
                                 })}
                             </span>
-
                         </motion.div>
                     </AnimatePresence>
                 </div>
