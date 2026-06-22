@@ -28,7 +28,7 @@ export function AdminNav() {
             to={to}
             end={to === '/admin'}
             className={({ isActive }) =>
-              `flex items-center gap-3 rounded-[2mm] px-3 py-3 text-sm font-semibold uppercase tracking-[0.08em] ${
+              `flex border-radius9999 items-center gap-3 px-4 py-3 text-sm font-semibold uppercase tracking-[0.08em] ${
                 isActive ? 'bg-primary text-white shadow-[0_10px_24px_rgba(0,72,152,0.18)]' : 'text-muted-foreground hover:bg-accent hover:text-foreground'
               }`
             }
@@ -39,7 +39,7 @@ export function AdminNav() {
         ))}
       </nav>
       <div className="p-3">
-        <Button type="button" variant="outline" className="w-full justify-start uppercase tracking-[0.08em]" onClick={logout}>
+        <Button type="button" border-radius9999 variant="outline" className="w-full justify-start uppercase tracking-[0.08em]" onClick={logout}>
           <LogOut className="mr-2 size-4" />
           uitloggen
         </Button>

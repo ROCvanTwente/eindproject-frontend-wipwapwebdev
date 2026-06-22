@@ -54,7 +54,7 @@ export function AdminLogin() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error ? <p className="rounded-[2mm] bg-destructive/10 p-2 text-sm text-destructive">{error}</p> : null}
+            {error ? <p className="bg-destructive/10 p-2 text-sm text-destructive">{error}</p> : null}
             <div className="space-y-2">
               <Label htmlFor="email">E-mail</Label>
               <Input

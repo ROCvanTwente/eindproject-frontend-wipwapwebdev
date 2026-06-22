@@ -63,12 +63,12 @@ export function Home() {
                                 <MapPinned className="size-7 text-primary" />
                             </div>
                             <div className="mt-auto space-y-4">
-                                <div className="rounded-[2mm] bg-white p-4 shadow-sm">
+                                <div className="bg-white py-3 px-4 border-radius9999 shadow-sm">
                                     <p className="roc-kicker text-primary">
                                         Placeholder
                                     </p>
                                 </div>
-                                <div className="rounded-[2mm] bg-primary p-4 text-white shadow-sm">
+                                <div className="bg-primary py-3 px-4 border-radius9999 text-white shadow-sm">
                                     <p className="text-sm font-semibold tracking-[0.12em]">
                                         Placeholder
                                     </p>

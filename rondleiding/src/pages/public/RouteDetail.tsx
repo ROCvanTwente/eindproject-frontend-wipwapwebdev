@@ -320,7 +320,7 @@ export function RouteDetail() {
                         variant="ghost"
                         onClick={() => goToStep(activeStep - 1)}
                         disabled={activeStep === 0}
-                        className="inline-flex items-center justify-center text-white/95 hover:text-white hover:bg-white/10 rounded-[2mm] text-sm font-semibold gap-1 disabled:opacity-40 disabled:pointer-events-none"
+                        className="inline-flex items-center justify-center text-white/95 hover:text-white hover:bg-white/10 text-sm font-semibold gap-1 disabled:opacity-40 disabled:pointer-events-none"
                     >
                         <ChevronLeft className="size-4" /> vorige
                     </Button>
@@ -334,7 +334,7 @@ export function RouteDetail() {
                         variant="ghost"
                         onClick={() => goToStep(activeStep + 1)}
                         disabled={activeStep >= orderedSteps.length - 1}
-                        className="inline-flex items-center justify-center text-white/95 hover:text-white hover:bg-white/10 rounded-[2mm] text-sm font-semibold gap-1 disabled:opacity-40 disabled:pointer-events-none"
+                        className="inline-flex items-center justify-center text-white/95 hover:text-white hover:bg-white/10 text-sm font-semibold gap-1 disabled:opacity-40 disabled:pointer-events-none"
                     >
                         volgende <ChevronRight className="size-4" />
                     </Button>
