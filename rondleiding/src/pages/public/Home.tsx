@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { ArrowRight, Building2, Compass, MapPinned } from "lucide-react";
 import { Button } from "../../app/components/ui/button";
-import gieterijBackground from "./img/gieterij1_logo-DR102645.jpg";
+import gieterijBackground from "../img/gieterij1_logo-DR102645.jpg";
 
 export function Home() {
     return (
