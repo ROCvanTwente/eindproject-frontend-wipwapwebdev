@@ -88,11 +88,7 @@ export function Home() {
                         <h2 className="roc-title mt-3 text-secondary">
                             kies een route of zoek direct een locatie
                         </h2>
-                        <p className="roc-copy roc-copy--on-white mt-4">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. Morbi elementum risus ut odio suscipit
-                            pretium. Vivamus metus urna, hendrerit sed.
-                        </p>
+                        
                         <div className="mt-6 flex flex-wrap gap-3">
                             <Button
                                 asChild
@@ -115,18 +111,6 @@ export function Home() {
                                 <Link to="/admin/login">beheer</Link>
                             </Button>
                         </div>
-                    </div>
-
-                    <div className="roc-panel p-6 md:p-8">
-                        <Compass className="size-8 text-primary" />
-                        <h3 className="roc-title mt-4">
-                            Lorem Ipsum dolor sit amet
-                        </h3>
-                        <p className="roc-copy mt-3 text-sm leading-6">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. Morbi elementum risus ut odio suscipit
-                            pretium. Vivamus metus urna, hendrerit sed.
-                        </p>
                     </div>
                 </div>
             </section>
