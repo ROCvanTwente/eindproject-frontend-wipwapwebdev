@@ -6,7 +6,7 @@ import gieterijBackground from "../../img/gieterij1_logo-DR102645.jpg";
 export function Home() {
     return (
         <main className="roc-page-shell">
-            <section className="roc-strip roc-strip--blue">
+            <section className="roc-strip roc-strip--blue h-screen">
                 <div className="roc-content-wrap roc-band roc-hero-grid">
                     <div className="roc-panel roc-panel--dark p-6 md:p-8 lg:p-10">
                         <p className="roc-kicker">roc van twente</p>
@@ -49,18 +49,6 @@ export function Home() {
                         <div className="flex h-full min-h-[18rem] flex-col justify-between">
                             <div className="flex items-start justify-between gap-4">
                                 <MapPinned className="size-7 text-primary" />
-                            </div>
-                            <div className="mt-auto space-y-4">
-                                <div className="bg-white py-3 px-4 border-radius9999 shadow-sm">
-                                    <Link to="/locations" className="roc-kicker text-primary">
-                                        locaties
-                                    </Link>
-                                </div>
-                                <div className="bg-primary py-3 px-4 border-radius9999 text-white shadow-sm">
-                                    <Link to="/routes" className="roc-kicker text-white">
-                                        routes
-                                    </Link>
-                                </div>
                             </div>
                         </div>
                     </div>
