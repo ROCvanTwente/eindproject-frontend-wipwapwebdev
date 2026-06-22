@@ -28,6 +28,7 @@ export function ResetPassword() {
   const queryEmail = searchParams.get('email')?.trim() ?? '';
   const sessionEmail = sessionStorage.getItem('adminEmail')?.trim() ?? '';
   const email = useMemo(() => queryEmail || sessionEmail, [queryEmail, sessionEmail]);
+  const [newUserName, setNewUserName] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -72,6 +73,7 @@ export function ResetPassword() {
     try {
       await api.post('/api/admin/force-password-change', {
         email,
+        newUserName,
         newPassword,
       });
       setSuccess(true);
@@ -115,6 +117,19 @@ export function ResetPassword() {
               <div className="space-y-2">
                 <Label htmlFor="reset-email">E-mail</Label>
                 <Input id="reset-email" type="email" value={email} disabled />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="new-username">Gebruikersnaam</Label>
+                <Input
+                  id="new-username"
+                  type="text"
+                  value={newUserName}
+                  onChange={(event) => setNewUserName(event.target.value)}
+                  minLength={3}
+                  required
+                  disabled={loading}
+                />
               </div>
 
               <div className="space-y-2">

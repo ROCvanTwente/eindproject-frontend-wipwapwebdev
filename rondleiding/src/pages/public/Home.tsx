@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { ArrowRight, Building2, Compass, MapPinned } from "lucide-react";
 import { Button } from "../../app/components/ui/button";
+import gieterijBackground from "../../img/gieterij1_logo-DR102645.jpg";
 
 export function Home() {
     return (
@@ -24,7 +25,6 @@ export function Home() {
                                 size="lg"
                                 variant="secondary"
                                 className="tracking-[0.08em]"
-
                             >
                                 <Link to="/routes">
                                     bekijk routes{" "}
@@ -36,7 +36,6 @@ export function Home() {
                                 size="lg"
                                 variant="outline"
                                 className="border-white/30 bg-transparent text-white hover:bg-white/10 tracking-[0.08em]"
-
                             >
                                 <Link to="/locations">alle locaties</Link>
                             </Button>
@@ -50,7 +49,7 @@ export function Home() {
                     <div
                         className="roc-panel p-6 md:p-8"
                         style={{
-                            backgroundImage: `url('/src/img/gieterij1_logo-DR102645.jpg')`,
+                            backgroundImage: `url(${gieterijBackground})`,
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                         }}
@@ -63,12 +62,12 @@ export function Home() {
                                 <MapPinned className="size-7 text-primary" />
                             </div>
                             <div className="mt-auto space-y-4">
-                                <div className="rounded-[2mm] bg-white p-4 shadow-sm">
+                                <div className="bg-white py-3 px-4 border-radius9999 shadow-sm">
                                     <p className="roc-kicker text-primary">
                                         Placeholder
                                     </p>
                                 </div>
-                                <div className="rounded-[2mm] bg-primary p-4 text-white shadow-sm">
+                                <div className="bg-primary py-3 px-4 border-radius9999 text-white shadow-sm">
                                     <p className="text-sm font-semibold tracking-[0.12em]">
                                         Placeholder
                                     </p>
@@ -95,20 +94,10 @@ export function Home() {
                                 size="lg"
                                 variant="outline"
                                 className="border-white/30 bg-white text-foreground tracking-[0.08em]"
-
                             >
                                 <Link to="/locations">
                                     locaties <Building2 className="size-4" />
                                 </Link>
-                            </Button>
-                            <Button
-                                asChild
-                                size="lg"
-                                variant="ghost"
-                                className="text-white shadow-sm bg-primary hover:bg-secondary/12 tracking-[0.08em]"
-
-                            >
-                                <Link to="/admin/login">beheer</Link>
                             </Button>
                         </div>
                     </div>

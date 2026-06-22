@@ -10,7 +10,7 @@ interface RouteCardProps {
 
 export function RouteCard({ route }: RouteCardProps) {
   return (
-    <Card className="h-full">
+    <Card className="z-index-10 h-full">
       <CardHeader className="pb-4">
         <CardTitle className="text-lg">{route.name}</CardTitle>
         <CardDescription>{route.description}</CardDescription>

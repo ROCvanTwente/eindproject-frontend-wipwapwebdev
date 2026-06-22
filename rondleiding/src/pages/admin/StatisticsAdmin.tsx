@@ -182,7 +182,7 @@ function StatCard({ title, value, description, icon: Icon }: { title: string; va
           <CardTitle>{title}</CardTitle>
           <CardDescription>{description}</CardDescription>
         </div>
-        <span className="rounded-[2mm] bg-primary/10 p-2 text-primary">
+        <span className="bg-primary/10 p-2 text-primary">
           <Icon className="size-5" />
         </span>
       </CardHeader>
@@ -215,5 +215,5 @@ function MetricTable({ rows, valueLabel }: { rows: Array<{ label: string; value:
 }
 
 function EmptyState({ text }: { text: string }) {
-  return <div className="rounded-[2mm] border border-dashed border-border bg-muted/30 p-6 text-sm text-muted-foreground">{text}</div>;
+  return <div className="border border-dashed border-border bg-muted/30 p-6 text-sm text-muted-foreground">{text}</div>;
 }

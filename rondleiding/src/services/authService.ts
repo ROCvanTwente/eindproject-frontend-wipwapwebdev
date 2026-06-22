@@ -7,10 +7,17 @@ interface LoginResponseShape {
   accessToken?: string;
   refreshToken?: string;
   requiresPasswordChange?: boolean;
+  requiresAccountSetup?: boolean;
   email?: string;
   user?: {
     email?: string;
   };
+}
+
+interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
 }
 
 function tokenFromPayload(data: LoginResponseShape): string | null {
@@ -20,7 +27,7 @@ function tokenFromPayload(data: LoginResponseShape): string | null {
 export const authService = {
   async login(
     payload: LoginRequest,
-  ): Promise<{ token: string; refreshToken?: string; requiresPasswordChange: boolean; email?: string }> {
+  ): Promise<{ token: string; refreshToken?: string; requiresPasswordChange: boolean; requiresAccountSetup: boolean; email?: string }> {
     const response = await api.post('/api/auth/login', payload);
     const data = unwrapResponseData<LoginResponseShape>(response.data);
     const token = tokenFromPayload(data);
@@ -38,18 +45,24 @@ export const authService = {
     // Decode the JWT to get the PasswordChanged claim
     const decoded = decodeJwt(token);
     const requiresPasswordChange = String(decoded?.PasswordChanged).toLowerCase() === 'false';
+    const requiresAccountSetup = String(decoded?.RequiresAccountSetup).toLowerCase() === 'true';
 
     return {
       token,
       refreshToken: data.refreshToken,
       requiresPasswordChange,
-      email: data.email ?? data.user?.email ?? payload.email,
+      requiresAccountSetup,
+      email: data.email ?? data.user?.email ?? payload.email ?? payload.identifier,
     };
   },
 
   logout() {
     localStorage.removeItem(TOKEN_STORAGE_KEY);
     localStorage.removeItem(REFRESH_STORAGE_KEY);
+  },
+
+  async changePassword(payload: ChangePasswordPayload) {
+    await api.post('/api/auth/change-password', payload);
   },
 
   getToken() {

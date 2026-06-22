@@ -1,5 +1,7 @@
 export interface JwtClaims {
   PasswordChanged?: string;
+  RequiresAccountSetup?: string;
+  UserName?: string;
   email?: string;
   sub?: string;
   [key: string]: unknown;

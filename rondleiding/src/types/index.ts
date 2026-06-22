@@ -53,7 +53,8 @@ export interface AuthUser {
 }
 
 export interface LoginRequest {
-  email: string;
+  identifier?: string;
+  email?: string;
   password: string;
 }
 
@@ -61,6 +62,21 @@ export interface DashboardStats {
   routes: number;
   locations: number;
   buildings: number;
+}
+
+export interface AdminOverview {
+  id: string;
+  email: string;
+  userName: string;
+  roles: string[];
+  requiresAccountSetup: boolean;
+}
+
+export interface AdminInviteResponse {
+  message: string;
+  email: string;
+  activationCode: string;
+  activationExpiresAt: string;
 }
 
 export interface AnalyticsDailyMetric {
