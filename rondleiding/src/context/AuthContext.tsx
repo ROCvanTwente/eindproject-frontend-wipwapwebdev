@@ -4,7 +4,7 @@ import { authService } from '../services/authService';
 interface AuthContextValue {
   isAuthenticated: boolean;
   requiresPasswordChange: boolean;
-  login: (email: string, password: string) => Promise<{ requiresPasswordChange: boolean; email?: string }>;
+  login: (identifier: string, password: string) => Promise<{ requiresPasswordChange: boolean; requiresAccountSetup: boolean; email?: string }>;
   completePasswordChange: () => void;
   logout: () => void;
 }
@@ -23,8 +23,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
     () => ({
       isAuthenticated,
       requiresPasswordChange,
-      async login(email: string, password: string) {
-        const result = await authService.login({ email, password });
+      async login(identifier: string, password: string) {
+        const result = await authService.login({ identifier, password });
         setIsAuthenticated(true);
         setRequiresPasswordChange(result.requiresPasswordChange);
 
@@ -34,7 +34,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
           sessionStorage.removeItem(PASSWORD_CHANGE_REQUIRED_KEY);
         }
 
-        return { requiresPasswordChange: result.requiresPasswordChange, email: result.email };
+        return {
+          requiresPasswordChange: result.requiresPasswordChange,
+          requiresAccountSetup: result.requiresAccountSetup,
+          email: result.email,
+        };
       },
       completePasswordChange() {
         setRequiresPasswordChange(false);

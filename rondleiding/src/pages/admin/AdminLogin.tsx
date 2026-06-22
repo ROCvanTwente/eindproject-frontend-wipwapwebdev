@@ -1,17 +1,16 @@
 import { FormEvent, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router';
+import { Link, Navigate, useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import { Button } from '../../app/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../app/components/ui/card';
 import { Input } from '../../app/components/ui/input';
 import { Label } from '../../app/components/ui/label';
 import { useAuth } from '../../context/AuthContext';
-import { getPasswordChangeRequirement } from '../../utils/jwtUtils';
 
 export function AdminLogin() {
   const navigate = useNavigate();
   const { login, isAuthenticated, requiresPasswordChange } = useAuth();
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -26,10 +25,15 @@ export function AdminLogin() {
     setLoading(true);
 
     try {
-      const loginResult = await login(email, password);
+      const loginResult = await login(identifier, password);
+
+      if (loginResult.requiresAccountSetup) {
+        navigate('/admin/activate', { replace: true });
+        return;
+      }
 
       if (loginResult.requiresPasswordChange) {
-        const adminEmail = loginResult.email ?? email.trim();
+        const adminEmail = loginResult.email ?? identifier.trim();
         sessionStorage.setItem('adminEmail', adminEmail);
         toast.info('Wijzig eerst je wachtwoord om door te gaan');
         navigate('/reset-password', { replace: true });
@@ -39,6 +43,15 @@ export function AdminLogin() {
       toast.success('Succesvol ingelogd');
       navigate('/admin', { replace: true });
     } catch (err) {
+      const responseData = (err as { response?: { data?: Record<string, unknown> } })?.response?.data;
+      if (responseData?.requiresAccountSetup === true) {
+        const pendingEmail = typeof responseData.email === 'string' ? responseData.email : identifier.trim();
+        sessionStorage.setItem('pendingAdminEmail', pendingEmail);
+        toast.info('Voltooi eerst je eerste login om toegang te krijgen');
+        navigate('/admin/activate', { replace: true });
+        return;
+      }
+
       setError(err instanceof Error ? err.message : 'Inloggen mislukt');
       toast.error('Inloggen mislukt');
     } finally {
@@ -56,12 +69,12 @@ export function AdminLogin() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {error ? <p className="bg-destructive/10 p-2 text-sm text-destructive">{error}</p> : null}
             <div className="space-y-2">
-              <Label htmlFor="email">E-mail</Label>
+              <Label htmlFor="identifier">E-mail of gebruikersnaam</Label>
               <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
+                id="identifier"
+                type="text"
+                value={identifier}
+                onChange={(event) => setIdentifier(event.target.value)}
                 required
               />
             </div>
@@ -78,6 +91,9 @@ export function AdminLogin() {
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'bezig...' : 'inloggen'}
             </Button>
+            <p className="text-center text-sm text-muted-foreground">
+              Eerste keer als admin? <Link to="/admin/activate" className="font-semibold text-primary underline-offset-4 hover:underline">Activeer je account</Link>
+            </p>
           </form>
         </CardContent>
       </Card>
