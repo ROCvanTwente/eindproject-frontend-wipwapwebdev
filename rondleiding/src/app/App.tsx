@@ -10,6 +10,7 @@ import { AdminLogin } from '../pages/admin/AdminLogin';
 import { BuildingsAdmin } from '../pages/admin/BuildingsAdmin';
 import { LocationsAdmin } from '../pages/admin/LocationsAdmin';
 import { RoutesAdmin } from '../pages/admin/RoutesAdmin';
+import { SettingsAdmin } from '../pages/admin/SettingsAdmin';
 import { StatisticsAdmin } from '../pages/admin/StatisticsAdmin';
 import { ResetPassword } from '../pages/ResetPassword';
 import { Home } from '../pages/public/Home';
@@ -40,6 +41,7 @@ export default function App() {
                 <Route path="locations" element={<LocationsAdmin />} />
                 <Route path="routes" element={<RoutesAdmin />} />
                 <Route path="statistics" element={<StatisticsAdmin />} />
+                <Route path="settings" element={<SettingsAdmin />} />
               </Route>
             </Route>
 

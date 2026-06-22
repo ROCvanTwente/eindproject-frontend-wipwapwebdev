@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router';
-import { LayoutDashboard, Building2, MapPin, Route, LogOut, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, Building2, MapPin, Route, LogOut, BarChart3, Settings } from 'lucide-react';
 import { Button } from '../app/components/ui/button';
 import { useAuth } from '../context/AuthContext';
 
@@ -9,6 +9,7 @@ const links = [
   { to: '/admin/locations', label: 'Locaties', icon: MapPin },
   { to: '/admin/routes', label: 'Routes', icon: Route },
   { to: '/admin/statistics', label: 'Statistieken', icon: BarChart3 },
+  { to: '/admin/settings', label: 'Instellingen', icon: Settings },
 ];
 
 export function AdminNav() {
