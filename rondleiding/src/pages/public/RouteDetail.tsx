@@ -119,28 +119,36 @@ export function RouteDetail() {
     const detectLanguage = (textToDetect: string): "en" | "nl" => {
         const t = textToDetect.toLowerCase();
 
-        // Simple heuristiek voor NL/EN (goed genoeg voor korte step-descriptions)
+        // Heuristiek NL/EN: standaard NL, alleen Engels als er duidelijk Engelstalige signalen zijn.
+        // (We vermijden té generieke woorden zodat NL niet per ongeluk Engels wordt.)
         const enSignals = [
-            // common short english words
-            " the ", " and ", " you ", " your ", " we ", " our ", " they ", " their ",
-            " is ", " are ", " of ", "to ", "from ", "with ", "in ", "on ", "for ", "at ", "as ",
-            // a few domain-ish words
-            "guide", "welcome", "entrance", "exit", "building", "museum",
-            "stairs", "floor", "level", "left", "right", "north", "south", "east", "west",
+            " discover ",
+            " magic ", "magic line",
+            " line ",
+            " the ", " you ", " your ", " and ", " we ", " our ", " they ", " their ",
+            " entrance", "exit",
+            " museum", "building",
+            " stairs", "floor", "level",
+            " left", "right", "north", "south", "east", "west",
+            " warmer", "warm", "heat",
         ];
+
         const nlSignals = [
             "de ", "en ", "je ", "jouw ", "wij ", "ons ", "zij ", "hun ",
             "gids", "welkom", "ingang", "uitgang", "gebouw", "museum",
             "trappen", "verdieping", "etage", "links", "rechts", "noord", "zuid", "oost", "west",
         ];
 
+        // tel alleen Engels; bij twijfel NL
         let enScore = 0;
         for (const s of enSignals) if (t.includes(s)) enScore++;
 
-        let nlScore = 0;
-        for (const s of nlSignals) if (t.includes(s)) nlScore++;
+        // optioneel: NL-signalen kunnen in de toekomst toegevoegd worden; voor nu default NL
+        void nlSignals;
 
-        return enScore > nlScore ? "en" : "nl";
+        // Engels is alleen waar als er minstens 2 duidelijke signalen gevonden worden
+        return enScore >= 2 ? "en" : "nl";
+
     };
 
     const getBestVoiceForLang = (lang: "en" | "nl", voices: SpeechSynthesisVoice[]) => {
