@@ -58,7 +58,7 @@ export function LocationsPage() {
 
     return (
         <main className="roc-page-shell">
-            <section className="roc-strip roc-strip--white h-screen">
+            <section className="roc-strip roc-strip--white">
                 <span className="roc-diagonal-overlay" />
                 <span className="roc-diagonal-overlay-sm" />
                 <div className="roc-content-wrap roc-band">
